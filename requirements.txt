@@ -1,0 +1,9 @@
+User properties:
+email - name - password - questionlist - answerlist - bookmarked questionlist - edit question
+
+
+
+question properties:
+question-user question title - question body - question tags - question date - 
+upvotes - downvotes - comment list -
+answers list,  
