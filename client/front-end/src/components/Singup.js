@@ -23,12 +23,14 @@ export default function Login() {
       <form className="login-form">
         <div className="login-form-container">
           <label>Email</label>
+          <input type="email" className="login-email"></input>
+          <label>Username</label>
           <input className="login-email"></input>
 
           <label>Password</label>
           <input className="login-password"></input>
           <div className="login-button-container">
-            <button className="login-button">Log in</button>
+            <button className="login-button">Sign up</button>
           </div>
         </div>
       </form>
