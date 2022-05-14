@@ -2,7 +2,10 @@ import './Navbar-style.css';
 import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
-  const hisory = useNavigate();
+
+  function changeUrl(url) {
+    window.location.href = `/${url}`;
+  }
   return (
     <nav className="main-nav">
       <ul>
@@ -11,8 +14,8 @@ function Navbar() {
           <li> <a href="tags">Tags</a></li>
       </ul>
       <div className="nav-button-group">
-          <button onClick={() => hisory('/singup')}>Sign Up</button>
-          <button onClick={() => hisory('/login')}>Log in</button>
+          <button onClick={() => changeUrl('signup')}>Sign Up</button>
+          <button onClick={() => changeUrl('login')}>Log in</button>
       </div>
     </nav>
   );

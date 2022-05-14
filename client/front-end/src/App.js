@@ -3,30 +3,16 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Signup from "./components/Singup";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <Routes>
         <Navbar />
-
-          <Route  path="/" element={<Navbar />}>
-            
-          </Route>
-          <Route exact path="/Singup" element={<Signup/>}>
-            <Signup />
-          </Route>
-          <Route exact path="/Login">
-            <Login />
-          </Route>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
     </Router>
