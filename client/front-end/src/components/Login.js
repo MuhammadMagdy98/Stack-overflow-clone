@@ -2,8 +2,12 @@ import "./Login-style.css";
 import FacebookLogo from "../assets/facebook-logo.svg";
 import GoogleLogo from "../assets/google-logo.svg";
 import GithubLogo from "../assets/github-logo.svg";
+import { LoginContext } from "../helpers/Context";
+
+
 
 export default function Login() {
+  
   return (
     <div className="login-container">
       <div className="social-login">
