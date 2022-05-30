@@ -1,0 +1,24 @@
+
+.questions-header {
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
+
+}
+
+.questions-container {
+    margin: 50px;
+}
+
+.ask-button {
+    width: 100px;
+    margin-top: 20px;
+    height: 40px;
+    background-color: #15333D;
+    color: white;
+    border: none;
+}
+
+.ask-button:hover {
+    cursor: pointer;
+}
