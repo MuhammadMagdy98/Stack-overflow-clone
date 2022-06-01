@@ -1,5 +1,8 @@
 User properties:
 email - name - password - questionlist - answerlist - bookmarked questionlist - edit question
+reputation - edit comment - delete comment - edit question 
+account creation date - ask question
+
 
 
 

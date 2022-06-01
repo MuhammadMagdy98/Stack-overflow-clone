@@ -1,4 +1,5 @@
 import './Ask-style.css';
+import {BiBold} from 'react-icons/bi';
 export default function Ask() {
   return (
     <div className="question-wrapper">
@@ -17,7 +18,9 @@ export default function Ask() {
           Include all the information someone would need to answer your question
         </p>
         <div className="question-body-container">
-          <div className="question-body-utils"></div>
+          <div className="question-body-utils">
+            
+          </div>
 
           <textarea className="question-body-text"></textarea>
 
