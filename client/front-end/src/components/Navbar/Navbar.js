@@ -1,11 +1,11 @@
 import './Navbar-style.css';
-import { useNavigate } from 'react-router-dom';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate} from "react-router-dom";
+
 
 function Navbar() {
-
+  let navigate = useNavigate();
   function changeUrl(url) {
-    window.location.href = `/${url}`;
+    navigate(`/${url}`);
   }
   return (
     <nav className="main-nav">

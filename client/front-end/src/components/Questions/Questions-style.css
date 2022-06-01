@@ -3,6 +3,7 @@
     display: flex;
     justify-content: space-between;
     width: 800px;
+    
 
 }
 
@@ -12,7 +13,7 @@
 
 .ask-button {
     width: 100px;
-    margin-top: 20px;
+    margin: 15px 0px;
     height: 40px;
     background-color: #15333D;
     color: white;
