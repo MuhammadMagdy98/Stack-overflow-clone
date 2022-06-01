@@ -1,7 +1,7 @@
 import react from "react";
 import styled from "styled-components";
 import "./QuestionCard-style.css";
-import emptyUser from "../assets/empty-user.png";
+import emptyUser from "../../assets/empty-user.png";
 export default function QuestionCard(props) {
   return (
     <div className="question-card-container">

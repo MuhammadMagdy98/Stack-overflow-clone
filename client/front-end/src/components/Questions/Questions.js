@@ -1,4 +1,4 @@
-import QuestionCard from "./QuestionCard";
+import QuestionCard from "../QuestionCard/QuestionCard";
 import "./Questions-style.css";
 export default function Questions() {
   return (
@@ -11,6 +11,12 @@ export default function Questions() {
      
       </div>
       <QuestionCard/>
+      <QuestionCard/>
+      <QuestionCard/>
+      <QuestionCard/>
+      <QuestionCard/>
+      <QuestionCard/>
+      
   </div>
    
   );

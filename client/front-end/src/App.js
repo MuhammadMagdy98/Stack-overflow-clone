@@ -1,10 +1,9 @@
 import logo from "./logo.svg";
 import "./App.css";
-import Navbar from "./components/Navbar";
-import Login from "./components/Login";
-import Signup from "./components/SignUp";
-import QuestionCard from "./components/QuestionCard";
-import Questions from "./components/Questions";
+import Navbar from "./components/Navbar/Navbar";
+import Login from "./components/Login/Login";
+import Signup from "./components/Signup/SignUp";
+import Questions from "./components/Questions/Questions";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {LoginContext} from "./helpers/Context";
 function App() {

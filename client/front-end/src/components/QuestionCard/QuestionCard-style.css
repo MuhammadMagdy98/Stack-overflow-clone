@@ -1,10 +1,11 @@
 
 .question-card-container {
-    width: 700px;
+    width: 800px;
     background-color: black;
     display: flex;
     color: white;
     justify-content: space-between;
+    margin-bottom: 10px;
     
 }
 
@@ -40,8 +41,9 @@
 
 .question-tags-container a {
     background-color: grey;
-    padding: 0px 10px;
+    padding: 3px 13px;
     margin: 5px;
+    
 }
 
 .question-card-container a:hover {
