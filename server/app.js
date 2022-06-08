@@ -2,11 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const userRoute = require('./routes/userRoute');
 
 require("dotenv").config();
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,9 +15,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const uri = `mongodb+srv://${process.env.name}:${process.env.password}@cluster0.cgzwi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
 app.get("/", (req, res) => {
-  console.log("hi");
-  res.status(200).send("OK");
+  res.status(200).send("migo");
 });
+
+
+app.use(userRoute);
+
+
 
 mongoose.connect(
   uri,
@@ -33,5 +38,5 @@ db.once("open", function () {
 });
 
 app.listen(port, () => {
-  console.log("Server is listening on port 3000");
+  console.log(`Server is listening on port ${port}`);
 });

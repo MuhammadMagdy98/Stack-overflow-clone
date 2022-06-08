@@ -17,9 +17,20 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please enter a username'],
         unique: true
     },
+    reputation: Number,
+    isAdmin: Boolean,
+
+    questionsList: [{url: String}],
+    
+    answersList: [{url: String}],
+
+    tagsList: [],
+
+    votesList: [{type: String}],
+
     
 });
 
-const users = mongoose.model('pregenance-users', userSchema);
+const users = mongoose.model('qa-users', userSchema);
 
 module.exports = users;
