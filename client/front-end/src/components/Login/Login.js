@@ -3,11 +3,35 @@ import FacebookLogo from "../../assets/facebook-logo.svg";
 import GoogleLogo from "../../assets/google-logo.svg";
 import GithubLogo from "../../assets/github-logo.svg";
 import { LoginContext } from "../../helpers/Context";
-
-
+import axios from "axios";
+import { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function Login() {
-  
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/login",
+        loginData
+      );
+      console.log(response.data);
+      navigate('/');
+      
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleChange = (e) => {
+    setLoginData((state) => ({ ...state, [e.target.name]: e.target.value }));
+  };
   return (
     <div className="login-container">
       <div className="social-login">
@@ -24,13 +48,25 @@ export default function Login() {
           <p>Sign in with Facebook</p>
         </div>
       </div>
-      <form className="login-form">
+      <form className="login-form" onSubmit={handleLogin}>
         <div className="login-form-container">
           <label>Email</label>
-          <input className="login-email"></input>
+          <input
+            className="login-email"
+            type="email"
+            name="email"
+            value={loginData.email}
+            onChange={handleChange}
+          ></input>
 
           <label>Password</label>
-          <input className="login-password"></input>
+          <input
+            className="login-password"
+            type="password"
+            name="password"
+            value={loginData.password}
+            onChange={handleChange}
+          ></input>
           <div className="login-button-container">
             <button className="login-button">Log in</button>
           </div>
