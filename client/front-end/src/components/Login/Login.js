@@ -6,12 +6,16 @@ import { LoginContext } from "../../helpers/Context";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
+import { useContext } from 'react';
+import updateUser from "../../helpers/updateuser";
 
 export default function Login() {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+
+  const {setUsername, isLoggedIn, username, setIsLoggedIn} = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -23,6 +27,12 @@ export default function Login() {
         loginData
       );
       console.log(response.data);
+      setUsername(response.data.username);
+      setIsLoggedIn(true);
+
+      updateUser(response.data);
+
+      console.log(isLoggedIn);
       navigate('/');
       
     } catch (err) {

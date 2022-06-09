@@ -5,6 +5,7 @@ import GithubLogo from "../../assets/github-logo.svg";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import updateUser from "../../helpers/updateuser";
 
 export default function Login() {
   const [signUpData, setSignUpData] = useState({
@@ -20,7 +21,7 @@ export default function Login() {
         "http://localhost:3001/signup",
         signUpData
       );
-      console.log(response.data);
+      updateUser(response.data);
       navigate('/');
       
     } catch (err) {

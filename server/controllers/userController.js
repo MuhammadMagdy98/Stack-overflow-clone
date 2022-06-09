@@ -1,6 +1,7 @@
 const User = require('../model/user');
 const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
+const jwt = require('jsonwebtoken');
 
 
 const signup = asyncHandler(async(req, res) => {
@@ -19,7 +20,7 @@ const signup = asyncHandler(async(req, res) => {
     }
 
     const userNameExists = await User.findOne({username});
-    if (!userExists) {
+    if (userNameExists) {
         res.status(400);
         throw new Error("username already exists");
     }
@@ -37,7 +38,8 @@ const signup = asyncHandler(async(req, res) => {
         res.status(201).json({
             _id: user._id,
             username: user.username,
-            email: user.email
+            email: user.email,
+            token: generateToken(user._id)
         })
     } else {
         res.status(400);
@@ -48,6 +50,8 @@ const signup = asyncHandler(async(req, res) => {
 
 const login = asyncHandler(async(req, res) => {
     const {email, password} = req.body;
+
+    console.log(req.body);
     
     if (!email  || !password) {
         res.status(400);
@@ -57,15 +61,19 @@ const login = asyncHandler(async(req, res) => {
     const user = await User.findOne({email});
 
     if (!user) {
+        
         res.status(400);
+        
         throw new Error("username or password is incorrect");
     }
 
     if (await bcrypt.compare(password, user.password)) {
+        console.log("user not found");
         res.status(201).json({
             _id: user._id,
             username: user.username,
-            email: user.email
+            email: user.email,
+            token: generateToken(user._id)
         })
     } else {
         res.status(400);
@@ -73,6 +81,12 @@ const login = asyncHandler(async(req, res) => {
     }
     
 });
+
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    });
+}
 
 
 module.exports = {
