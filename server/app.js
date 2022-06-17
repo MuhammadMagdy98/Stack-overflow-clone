@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 const userRoute = require('./routes/userRoute');
 const cors = require('cors');
 
+const { requireAuth, checkUser } = require('./middleware/auth');
+
+
 require("dotenv").config();
 
 const app = express();
@@ -16,12 +19,9 @@ app.use(cors());
 
 const uri = `mongodb+srv://${process.env.name}:${process.env.password}@cluster0.cgzwi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
-app.get("/", (req, res) => {
-  res.status(200).send("migo");
-});
 
 
-app.use(userRoute);
+
 
 
 
@@ -42,3 +42,7 @@ db.once("open", function () {
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
+
+
+app.get('/', checkUser);
+app.use(userRoute);

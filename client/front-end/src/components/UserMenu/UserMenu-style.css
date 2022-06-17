@@ -1,0 +1,42 @@
+.user-menu-options-invisible {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    margin-top: 110px;
+    visibility: hidden;
+
+}
+
+.user-menu-options-visible {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    position: absolute;
+    margin-right: -50px;
+    margin-top: 189px;
+    visibility: visible;
+}
+
+.user-menu-options-visible li {
+    
+    background-color: #F24C4C;
+
+}
+
+.user-menu-options-visible li:hover {
+    cursor: pointer;
+    background-color: black;
+
+}
+
+.down-arrow {
+    width: 30px;
+    height: 30px;
+    
+}
+
+
+.down-arrow:hover {
+    cursor: pointer;
+    
+}

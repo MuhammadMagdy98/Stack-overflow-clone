@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LoginContext } from "./helpers/Context";
 import Ask from "./components/Ask/Ask";
 import { useState } from "react";
+import PrivateScreen from "./components/Routes/PrivateScreen";
 function App() {
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,6 +18,7 @@ function App() {
       <LoginContext.Provider
             value={{ username, setUsername, isLoggedIn, setIsLoggedIn }}
           >
+            <PrivateScreen/>
         <Navbar />
         <Routes>
           

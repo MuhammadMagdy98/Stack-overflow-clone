@@ -6,21 +6,23 @@ export default function PrivateScreen() {
   const { setUsername, isLoggedIn, username, setIsLoggedIn } = useContext(LoginContext);
   
   useEffect(() => {
-    let token = { token: localStorage.getItem("jwt") };
+    let token = { token: localStorage.getItem("token") };
 
     const config = {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("jwt")}`,
+          Authorization: `${localStorage.getItem("token")}`,
         },
       };
       axios.get('http://localhost:3001/', config)
       .then(response => {
-          setUsername(response.username);
+        console.log(response.data.username);
+          setUsername(response.data.username);
           setIsLoggedIn(true);
       })
       .catch(err => {
-          localStorage.removeItem("jwt");
+        setUsername('');
+        setIsLoggedIn(false);
       })
   }, [])
   

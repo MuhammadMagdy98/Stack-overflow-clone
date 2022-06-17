@@ -8,9 +8,15 @@ import {
 import { LoginContext } from "../../helpers/Context";
 import { useContext, useEffect } from "react";
 import { useState } from "react";
+import DownArrow from "../../assets/caret-down-solid.svg";
+
+import UserMenu from "../UserMenu/UserMenu";
+
+
 
 function Navbar() {
   let navigate = useNavigate();
+
   function changeUrl(url) {
     navigate(`/${url}`);
   }
@@ -18,25 +24,24 @@ function Navbar() {
   const [loginState, setLoginState] = useState();
 
   console.log(loginState);
-  // let val = '';
-  // if (isLoggedIn) {
-  //   val = username;
-  //   setLoginState(val);
-  // } else {
-  //   val =
-  //   setLoginState(val);
-  // }
+  
 
   useEffect(() => {
     console.log("use effect navbar");
     if (localStorage.getItem('username')) {
-      setLoginState(localStorage.getItem('username'));
+      const userName = localStorage.getItem('username');
+      setLoginState(<>
+      <UserMenu userName={userName}/>
+      
+      </>);
+
+     
     } else {
       setLoginState(<><button onClick={() => changeUrl('signup')}>Sign Up</button>
       <button onClick={() => changeUrl('login')}>Log in</button></>);
     }
     console.log(isLoggedIn);
-  }, [username]);
+  }, [username, isLoggedIn]);
   return (
     <nav className="main-nav">
       <ul>
