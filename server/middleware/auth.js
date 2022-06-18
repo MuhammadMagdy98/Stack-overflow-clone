@@ -36,7 +36,7 @@ const checkUser = asyncHandler(async (req, res, next) => {
 
     
 
-    if (!token || token === null) {
+    if (!token) {
         console.log("not authorized");
         res.status(400)
         throw new Error("not authorized");   

@@ -15,7 +15,7 @@ export default function Login() {
     password: "",
   });
 
-  const {setUsername, isLoggedIn, username, setIsLoggedIn} = useContext(LoginContext);
+  const {setUsername, isLoggedIn, username, setIsLoggedIn, setIsAdmin} = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -28,7 +28,11 @@ export default function Login() {
       );
       console.log(response.data);
       setUsername(response.data.username);
+
       setIsLoggedIn(true);
+
+      setIsAdmin(response.data.isAdmin);
+      
 
       updateUser(response.data);
 

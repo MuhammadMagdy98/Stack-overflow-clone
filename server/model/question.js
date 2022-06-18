@@ -15,10 +15,14 @@ const questionSchema = new mongoose.Schema({
         required: true,
     },
 
-    votes: Number,
+    votes: {
+        type: Number,
+        default: 0,
+    },
     
     author: {
-        type: String
+        type: String,
+        required: true,
     },
 
     comments: [{body: String, user: String}],

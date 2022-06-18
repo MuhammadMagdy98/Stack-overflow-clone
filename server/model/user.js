@@ -17,8 +17,14 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please enter a username'],
         unique: true
     },
-    reputation: Number,
-    isAdmin: Boolean,
+    reputation: {
+        type: Number,
+        default: 0
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
 
     questionsList: [{url: String}],
     

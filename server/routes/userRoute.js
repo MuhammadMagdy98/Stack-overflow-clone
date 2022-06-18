@@ -10,4 +10,8 @@ router.post('/signup', userController.signup);
 
 router.post('/login', userController.login);
 
+router.post('/add-tag', userController.addTag);
+
+router.get('/tags', userController.getTags);
+
 module.exports = router;

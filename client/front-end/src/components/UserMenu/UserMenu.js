@@ -9,7 +9,7 @@ import {
 import { LoginContext } from "../../helpers/Context";
 
 export default function UserMenu(props) {
-    const { setUsername, setIsLoggedIn, username } = useContext(LoginContext);
+    const { setUsername, setIsLoggedIn, username, setIsAdmin } = useContext(LoginContext);
 
     let navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
@@ -18,6 +18,7 @@ export default function UserMenu(props) {
     const handleLogOut = () => {
 
         localStorage.clear();
+        setIsAdmin(false);
         setIsLoggedIn(false);
         setUsername('');
         navigate('/');

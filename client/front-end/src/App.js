@@ -9,14 +9,17 @@ import { LoginContext } from "./helpers/Context";
 import Ask from "./components/Ask/Ask";
 import { useState } from "react";
 import PrivateScreen from "./components/Routes/PrivateScreen";
+import { Tags } from "./components/Tags/Tags";
+import { AddTagForm } from "./components/AddTagForm/AddTagForm";
 function App() {
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   return (
     <Router>
       <div className="App">
       <LoginContext.Provider
-            value={{ username, setUsername, isLoggedIn, setIsLoggedIn }}
+            value={{ username, setUsername, isLoggedIn, setIsLoggedIn, isAdmin, setIsAdmin }}
           >
             <PrivateScreen/>
         <Navbar />
@@ -26,6 +29,9 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/questions" element={<Questions />} />
             <Route path="/ask" element={<Ask />} />
+            <Route path="/tags" element={<Tags />} />
+            <Route path="/add-tags" element={<AddTagForm />} />
+
         </Routes>
         </LoginContext.Provider>
       </div>

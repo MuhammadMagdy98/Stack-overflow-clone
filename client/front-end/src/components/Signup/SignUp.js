@@ -3,9 +3,11 @@ import FacebookLogo from "../../assets/facebook-logo.svg";
 import GoogleLogo from "../../assets/google-logo.svg";
 import GithubLogo from "../../assets/github-logo.svg";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import updateUser from "../../helpers/updateuser";
+import { LoginContext } from "../../helpers/Context";
+
 
 export default function Login() {
   const [signUpData, setSignUpData] = useState({
@@ -13,6 +15,8 @@ export default function Login() {
     username: "",
     password: "",
   });
+
+  const { setIsLoggedIn} = useContext(LoginContext);
   const navigate = useNavigate();
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -22,6 +26,7 @@ export default function Login() {
         signUpData
       );
       updateUser(response.data);
+      setIsLoggedIn(true);
       navigate('/');
       
     } catch (err) {
