@@ -8,6 +8,7 @@ body {
     justify-content: space-between;
     padding: 10px;
     position: fixed;
+    z-index: 999;
     width: 100%;
     top: 0;
 

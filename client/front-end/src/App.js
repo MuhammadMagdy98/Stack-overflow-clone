@@ -12,6 +12,7 @@ import { useState } from "react";
 import PrivateScreen from "./components/Routes/PrivateScreen";
 import { Tags } from "./components/Tags/Tags";
 import { AddTagForm } from "./components/AddTagForm/AddTagForm";
+import QuestionView from "./components/QuestionView/QuestionView";
 function App() {
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,6 +35,8 @@ function App() {
           <TagContext.Provider value={{tags, setTags}}>
             <PrivateScreen />
             <Navbar />
+            <QuestionView tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/>
+
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />

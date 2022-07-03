@@ -15,7 +15,7 @@ export function Tags() {
         console.log("Hi Im fetching tags");
         const fetchTags = async() => {
             const tags = await axios.get('http://localhost:3001/tags');
-            setTags(tags.data);
+            setQuestionTags(tags.data);
         }
 
         fetchTags();
