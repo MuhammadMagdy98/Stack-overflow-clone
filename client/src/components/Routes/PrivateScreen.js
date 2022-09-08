@@ -12,7 +12,7 @@ export default function PrivateScreen() {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        Authorization: `${token}`,
       },
     };
     axios

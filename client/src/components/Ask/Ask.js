@@ -1,37 +1,87 @@
-import './Ask-style.css';
-import {BiBold} from 'react-icons/bi';
-import { TagContext } from '../../helpers/Context';
-import { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { TagCard } from '../TagCard/TagCard';
+import "./Ask-style.css";
+import { BiBold } from "react-icons/bi";
+import { TagContext } from "../../helpers/Context";
+import { useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { TagCard } from "../TagCard/TagCard";
 import "../Tags/Tags-style.css";
 
 export default function Ask() {
   const [tags, setTags] = useState([]);
-  const [formData, setFormData] = useState({title: '', body: '', tags: []});
-  const [cards, setCards] = useState('');
+  const [formData, setFormData] = useState({ title: "", body: "", tags: [] });
+  const [inputTag, setInputTag] = useState('');
+  const [cards, setCards] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTagsLinks, setSelectedTagsLinks] = useState([]);
+  console.log(selectedTags);
   const handleChange = (event) => {
     if (event.target.name === "tags") {
       let filteredTags = tags.filter((elem) => {
-        return elem.name.toLowerCase().includes(event.target.value) && event.target.value;
+        return (
+          elem.name.toLowerCase().includes(event.target.value.toLowerCase()) &&
+          event.target.value && !selectedTags.includes(elem.name)
+        );
+        
       });
       console.log(filteredTags);
-      setCards(filteredTags.map((elem) => {
-        return <TagCard name={elem.name} description={elem.description}/>
-      }));
+      setCards(
+        filteredTags.map((elem) => {
+          return (
+           
+            <TagCard
+              name={elem.name}
+              description={elem.description}
+              updateTags={setSelectedTags}
+              Tags={selectedTags}
+              selectedTags={selectedTagsLinks}
+              updateSelectedTags={setSelectedTagsLinks}
+              setInputTag={setInputTag}
+              cards={cards}
+              setCards={setCards}
+            />
+           
+          );
+        })
+      );
+      setInputTag(event.target.value);
     }
-    setFormData((state) => ({...state, [event.target.name] : event.target.value}))
-  }
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  };
   useEffect(() => {
-
     console.log("Hi Im fetching tags");
-    const fetchTags = async() => {
-        const tags = await axios.get('http://localhost:3001/tags');
-        setTags(tags.data);
-    }
+    const fetchTags = async () => {
+      const tags = await axios.get("http://localhost:3001/tags");
+      setTags(tags.data);
+    };
 
     fetchTags();
-}, []);
+  }, []);
+
+  const handleClose = (e) => {
+    console.log("closing");
+    e.preventDefault();
+    let removed = selectedTags.filter((elem) => {
+      return !elem.includes(e.target.getAttribute('name'));
+    });
+
+    console.log(`removed = ${e.target.getAttribute('name')}`);
+    setSelectedTags(removed);
+  }
+  useEffect(() => {
+    setSelectedTagsLinks(
+      selectedTags.map((elem, i) => {
+        return <a name={elem} key={i} className="tag-link" title="c++">
+         
+          {elem}
+          <span name={`${elem}`} title="remove tag" onClick={handleClose}>&#10005;</span>
+        </a>;
+      })
+    );
+
+  }, [selectedTags]);
   return (
     <div className="question-wrapper">
       <h1>Ask a question</h1>
@@ -52,22 +102,31 @@ export default function Ask() {
           Include all the information someone would need to answer your question
         </p>
         <div className="question-body-container">
-          <div className="question-body-utils">
-            
-          </div>
+          <div className="question-body-utils"></div>
 
-          <textarea onChange={handleChange} name="body" value={formData.body} className="question-body-text"></textarea>
+          <textarea
+            onChange={handleChange}
+            name="body"
+            value={formData.body}
+            className="question-body-text"
+          ></textarea>
 
           <h2> Tags </h2>
           <p>Add up to 5 tags to describe what your question is about</p>
-
-          <input onChange={handleChange} name="tags" value={formData.tags} className="ask-question-tags" type="text"></input>
+          <div className="tag-list">
+            {selectedTagsLinks}
+            <input
+              onChange={handleChange}
+              name="tags"
+              value={inputTag}
+              className="ask-question-tags"
+              type="text"
+            ></input>
+          </div>
           {cards}
         </div>
       </div>
-      <button className="ask-button">
-          Ask question
-      </button>
+      <button className="ask-button">Ask question</button>
     </div>
   );
 }

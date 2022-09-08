@@ -35,7 +35,7 @@ function App() {
           <TagContext.Provider value={{tags, setTags}}>
             <PrivateScreen />
             <Navbar />
-            <QuestionView tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/>
+            {/* <QuestionView title={questionTitle} body={questionBody} tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/> */}
 
             <Routes>
               <Route path="/login" element={<Login />} />

@@ -62,5 +62,32 @@
 }
 
 
+.tag-list {
+    width: 100%;
+    display: flex;
+    background-color: var(--grey-color);
+
+}
+
+.ask-question-tags {
+
+}
+
+.remove-tag-links {
+    width: 40px;
+}
+.tag-link {
+    display: flex;
+    background-color: teal;
+    
+    padding: 5px;
+    margin: 5px;
+}
+
+.tag-link span:hover {
+    cursor: pointer;
+    background-color: black;
+}
+
 
 
