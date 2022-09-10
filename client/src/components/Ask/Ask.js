@@ -13,7 +13,14 @@ export default function Ask() {
   const [cards, setCards] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedTagsLinks, setSelectedTagsLinks] = useState([]);
-  console.log(selectedTags);
+  const handleAsk = async(event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:3001/ask', formData);
+    } catch(err) {
+
+    }
+  }
   const handleChange = (event) => {
     if (event.target.name === "tags") {
       let filteredTags = tags.filter((elem) => {
@@ -48,6 +55,8 @@ export default function Ask() {
     setFormData((state) => ({
       ...state,
       [event.target.name]: event.target.value,
+      tags: selectedTags
+
     }));
   };
   useEffect(() => {
@@ -126,7 +135,7 @@ export default function Ask() {
           {cards}
         </div>
       </div>
-      <button className="ask-button">Ask question</button>
+      <button className="ask-button" onClick={handleAsk}>Ask question</button>
     </div>
   );
 }

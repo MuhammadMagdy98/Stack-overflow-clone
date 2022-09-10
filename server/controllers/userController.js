@@ -1,5 +1,6 @@
 const User = require('../model/user');
 const Tags = require('../model/tags');
+const Question = require('../model/question');
 const bcrypt = require('bcrypt');
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
@@ -124,6 +125,79 @@ const addTag = asyncHandler(async(req, res) => {
 });
 
 
+const validTags = async(tags) => {
+    if (!(tags instanceof Array)) {
+        return false;
+    }
+
+    const allTags = await Tags.find({});
+    const filteredData = filterTags(allTags);
+    
+    tags.forEach((elem) => {
+        let validTag = false;
+        for (let i = 0; i < filteredTags.length; i++) {
+            if (elem === filteredTags[i].name) {
+                validTag = true;
+            }
+        }
+        if (!validTag) {
+            return false;
+        }
+    });
+
+    return true;
+}
+
+
+const askQuestion = asyncHandler(async(req, res) => {
+    const {title, body, tags, author} = req.body;
+
+    if (!title || !body || !tags || !author) {
+        res.status(400);
+        throw new Error("Invalid data");
+        return;
+    }
+
+    const validAuthor = await User.findOne({username: author});
+
+    if (!validAuthor) {
+        res.status(400);
+        throw new Error("Unauthorized");
+        return;
+    }
+
+    const areValidTags = await validTags(tags);
+    if (!areValidTags) {
+        res.status(400);
+        throw new Error("Invalid tags");
+        return;
+    }
+    
+
+
+
+    const createdQuestion = await Question.create({title, body, tags, author});
+
+    if (!createdQuestion) {
+        res.status(400);
+        throw new Error("Something went wrong");
+    } else {
+        res.status(201).send("Question is added successfully");
+    }
+
+
+
+});
+
+const getQuestions = asyncHandler(async(req, res) => {
+    const allQuestions = await Question.find({});
+
+
+    res.status(201).send(allQuestions);
+
+});
+
+
 const filterTags = (allTags) => {
     let filteredData = [];
 
@@ -160,4 +234,6 @@ module.exports = {
     login,
     addTag,
     getTags,
+    askQuestion,
+    getQuestions,
 };

@@ -14,4 +14,8 @@ router.post('/add-tag', userController.addTag);
 
 router.get('/tags', userController.getTags);
 
+router.post('/ask', userController.askQuestion);
+
+router.get('/getquestions', userController.getQuestions);
+
 module.exports = router;

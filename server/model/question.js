@@ -8,7 +8,7 @@ const questionSchema = new mongoose.Schema({
     body: {
         type: String,
         required: true,
-        minlength: 200,
+        minlength: 50,
     },
     tags: {
         type: Array,
@@ -27,7 +27,7 @@ const questionSchema = new mongoose.Schema({
 
     comments: [{body: String, user: String}],
 
-    answerList: [{body: String, user: String, votes: Number}],
+    answerList: [{body: String, user: String, votes: Number, author: String}],
 
     
 
