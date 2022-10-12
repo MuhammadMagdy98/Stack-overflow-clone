@@ -18,6 +18,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [tags, setTags] = useState([]);
+  const questionTitle = 'Why processing sorted arrays is faster than unsorted array?';
+  const questionBody = 'Why processing sorted arrays is faster than unsorted array? '
   return (
     <Router>
       <div className="App">
@@ -35,7 +37,7 @@ function App() {
           <TagContext.Provider value={{tags, setTags}}>
             <PrivateScreen />
             <Navbar />
-            {/* <QuestionView title={questionTitle} body={questionBody} tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/> */}
+            <QuestionView title={questionTitle} body={questionBody} tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/>
 
             <Routes>
               <Route path="/login" element={<Login />} />

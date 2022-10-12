@@ -26,7 +26,7 @@ export default function QuestionView(props) {
   return (
     <div className="question-view-container">
       <div className="question-view-title">
-        <h2> {props.questionTitle} </h2>
+        <h2> {props.title} </h2>
       </div>
       <hr></hr>
       <div className="question-view-body">
@@ -47,7 +47,7 @@ export default function QuestionView(props) {
           ></img>
         </div>
         <div className="question-body-content">
-          <p> {props.questionBody} </p>
+          <p> {props.body} </p>
         </div>
       </div>
 
