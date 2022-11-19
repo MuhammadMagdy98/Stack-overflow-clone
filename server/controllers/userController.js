@@ -131,7 +131,7 @@ const validTags = async(tags) => {
     }
 
     const allTags = await Tags.find({});
-    const filteredData = filterTags(allTags);
+    const filteredTags = filterTags(allTags);
     
     tags.forEach((elem) => {
         let validTag = false;
@@ -151,7 +151,6 @@ const validTags = async(tags) => {
 
 const askQuestion = asyncHandler(async(req, res) => {
     const {title, body, tags, author} = req.body;
-
     if (!title || !body || !tags || !author) {
         res.status(400);
         throw new Error("Invalid data");
@@ -177,11 +176,11 @@ const askQuestion = asyncHandler(async(req, res) => {
 
 
     const createdQuestion = await Question.create({title, body, tags, author});
-
     if (!createdQuestion) {
         res.status(400);
         throw new Error("Something went wrong");
     } else {
+        console.log("question added");
         res.status(201).send("Question is added successfully");
     }
 
@@ -192,7 +191,7 @@ const askQuestion = asyncHandler(async(req, res) => {
 const getQuestions = asyncHandler(async(req, res) => {
     const allQuestions = await Question.find({});
 
-
+    console.log("get all questions");
     res.status(201).send(allQuestions);
 
 });

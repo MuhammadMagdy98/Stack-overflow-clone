@@ -8,7 +8,7 @@ import "../Tags/Tags-style.css";
 
 export default function Ask() {
   const [tags, setTags] = useState([]);
-  const [formData, setFormData] = useState({ title: "", body: "", tags: [] });
+  const [formData, setFormData] = useState({ title: "", body: "", tags: [], author: "" });
   const [inputTag, setInputTag] = useState('');
   const [cards, setCards] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -16,6 +16,8 @@ export default function Ask() {
   const handleAsk = async(event) => {
     event.preventDefault();
     try {
+      console.log("positing:");
+      console.log(formData);
       const response = await axios.post('http://localhost:3001/ask', formData);
     } catch(err) {
 
@@ -41,10 +43,14 @@ export default function Ask() {
               updateTags={setSelectedTags}
               Tags={selectedTags}
               selectedTags={selectedTagsLinks}
-              updateSelectedTags={setSelectedTagsLinks}
+              updateSelectedTags={setSelectedTags}
               setInputTag={setInputTag}
               cards={cards}
               setCards={setCards}
+              setFormData={setFormData}
+              formData={formData}
+              tags={tags}
+             
             />
            
           );
@@ -52,12 +58,15 @@ export default function Ask() {
       );
       setInputTag(event.target.value);
     }
+    console.log(selectedTags);
     setFormData((state) => ({
       ...state,
       [event.target.name]: event.target.value,
-      tags: selectedTags
+      tags: selectedTags,
+      author: localStorage.getItem("username")
 
     }));
+    console.log(formData);
   };
   useEffect(() => {
     console.log("Hi Im fetching tags");

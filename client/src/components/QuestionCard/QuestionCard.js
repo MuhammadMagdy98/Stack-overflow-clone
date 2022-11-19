@@ -13,18 +13,17 @@ export default function QuestionCard(props) {
       <div className="question-card-title-container">
         <div className="question-card-title">
           <h3>
-            <a>Why processing sorted array is faster than unsorted array? </a>
+            <a> {props.title} </a>
           </h3>
           <div className="question-tags">
             <div className="question-tags-container">
-              <a>tag1</a>
-              <a>tag1</a>
-              <a>tag1</a>
+              {props.tags.map((elem) => {
+                return <a> {elem} </a>
+              })}
             </div>
             <div className="user-info">
-            
               <img alt="user" src={emptyUser}></img>
-              <a>userx </a>
+              <a> {props.author} </a>
               <span>asked 3 minutes ago</span>
             </div>
           </div>
