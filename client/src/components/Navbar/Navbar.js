@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   useNavigate,
+  redirect
 } from "react-router-dom";
 import { LoginContext, TagConext } from "../../helpers/Context";
 import { useContext, useEffect } from "react";
@@ -49,7 +50,7 @@ function Navbar() {
       <ul>
         <li>
           {" "}
-          <a href="questions">Questions</a>
+          <a href="/questions">Questions</a>
         </li>
         <li>
           {" "}

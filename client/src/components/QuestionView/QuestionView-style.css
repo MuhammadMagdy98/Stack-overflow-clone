@@ -1,17 +1,16 @@
 .question-view-container {
-    margin-top: 90px;
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  margin-top: 90px;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-
 .question-view-title {
-    display: flex;
-    color: black;
-    padding: 10px;
-    font-family: sans-serif;
+  display: flex;
+  color: black;
+  padding: 10px;
+  font-family: sans-serif;
 }
 .question-view-upvote {
   transform: rotate(180deg);
@@ -28,37 +27,99 @@
   margin: 10px;
   background-color: black;
   border-radius: 12px;
-
 }
 
-.question-view-downvote:hover, .question-view-upvote:hover {
-    cursor: pointer;
+.question-view-downvote:hover,
+.question-view-upvote:hover {
+  cursor: pointer;
 }
-
 
 .question-view-body {
-    display: flex;
+  display: flex;
 }
 .question-view-score {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.question-body-content {
-    padding: 10px;
-    color:  black;
-    font-size: 20px;
+.question-body-content p {
+  padding: 10px;
+  color: black;
+  font-size: 15px;
 }
 
 .question-view-tag-child {
-    background-color: black;
-    padding: 4px 6px;
-    text-align: center;
-    text-decoration: none;
-    color: white;   
-    margin: 2px;
+  background-color: black;
+  padding: 4px 6px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  margin: 2px;
 }
 
 .question-view-tags {
-    margin-left: 50px;
+  margin-left: 50px;
+}
+
+.add-comment {
+  color: #0047ee37;
+}
+
+.add-comment:hover {
+  cursor: pointer;
+}
+
+.add-comment-containter {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.add-comment-button {
+  background-color: teal;
+  border: none;
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  height: 40px;
+  width: 120px;
+  margin: 10px;
+}
+
+.comment-textarea {
+  width: 50%;
+  background-color: transparent;
+  resize: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+button:hover {
+  cursor: pointer;
+}
+
+.post-answer-button {
+  background-color: teal;
+  border: none;
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  height: 40px;
+  width: 140px;
+  margin: 50px 0px;
+}
+
+.answer-textarea {
+  padding: 10px;
+  border-radius: 5px;
+  min-height: 200px;
+  background-color: transparent;
+  width: 50%;
+  resize: none;
+}
+
+.add-answer-container {
+  margin-top: 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }

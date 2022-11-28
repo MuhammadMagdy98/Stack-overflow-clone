@@ -58,7 +58,6 @@ export default function Ask() {
       );
       setInputTag(event.target.value);
     }
-    console.log(selectedTags);
     setFormData((state) => ({
       ...state,
       [event.target.name]: event.target.value,

@@ -24,9 +24,10 @@ export default function Questions() {
           Ask question
         </button>
       </div>
-      {questionsData.map((elem) => {
+      {questionsData.map((elem, index) => {
         return (
           <QuestionCard
+            id={index + 1}
             title={elem.title}
             tags={elem.tags}
             author={elem.author}

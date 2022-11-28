@@ -37,16 +37,16 @@ function App() {
           <TagContext.Provider value={{tags, setTags}}>
             <PrivateScreen />
             <Navbar />
-            {/* <QuestionView title={questionTitle} body={questionBody} tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/> */}
+            <QuestionView title={questionTitle} body={questionBody} tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/>
 
-            <Routes>
+            {/* <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/questions" element={<Questions />} />
               <Route path="/ask" element={<Ask />} />
               <Route path="/tags" element={<Tags />} />
               <Route path="/add-tags" element={<AddTagForm />} />
-            </Routes>
+            </Routes> */}
           </TagContext.Provider>
         </LoginContext.Provider>
       </div>

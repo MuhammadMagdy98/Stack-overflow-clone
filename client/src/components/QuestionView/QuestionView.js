@@ -23,6 +23,19 @@ export default function QuestionView(props) {
     setVoteCount(voteCount - 1);
   };
 
+  const handleAddComment = () => {
+    setShowCommentContainer(true);
+  };
+
+  const [textAreaStyle, setTextAreaStyle] = useState({
+    width: "50%",
+    backgroundColor: "transparent",
+    resize: "none",
+    padding: "10px",
+  });
+
+  const [showCommentContainter, setShowCommentContainer] = useState(false);
+
   return (
     <div className="question-view-container">
       <div className="question-view-title">
@@ -62,6 +75,24 @@ export default function QuestionView(props) {
       />
       <Comment body={"Why are you gay?"} url={"/"} username={"na7o"} />
       <Comment body={"Why are you gay?"} url={"/"} username={"na7o"} />
+      <a
+        class="add-comment"
+        onClick={handleAddComment}
+        style={{ color: "#0000EE" }}
+      >
+        {" "}
+        Add a comment{" "}
+      </a>
+      {showCommentContainter && (
+        <div class="add-comment-containter">
+          <textarea class="comment-textarea">  </textarea>
+          <button class="add-comment-button">Add a comment</button>
+        </div>
+      )}
+      <div class="add-answer-container">
+        <textarea class="answer-textarea">  </textarea>
+        <button class="post-answer-button">Post your answer</button>
+      </div>
     </div>
   );
 }

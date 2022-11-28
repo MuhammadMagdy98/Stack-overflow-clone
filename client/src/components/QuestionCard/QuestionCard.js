@@ -2,7 +2,13 @@ import react from "react";
 import styled from "styled-components";
 import "./QuestionCard-style.css";
 import emptyUser from "../../assets/empty-user.png";
+import {Navigate, useNavigate} from "react-router-dom";
 export default function QuestionCard(props) {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    console.log("clicked");
+    navigate(`/question/${props.id}`);
+  }
   return (
     <div className="question-card-container">
       <div className="question-card-stats">
@@ -12,7 +18,7 @@ export default function QuestionCard(props) {
       </div>
       <div className="question-card-title-container">
         <div className="question-card-title">
-          <h3>
+          <h3 onClick={handleClick}>
             <a> {props.title} </a>
           </h3>
           <div className="question-tags">
