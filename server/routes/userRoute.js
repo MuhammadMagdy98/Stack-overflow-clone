@@ -18,4 +18,16 @@ router.post('/ask', userController.askQuestion);
 
 router.get('/getquestions', userController.getQuestions);
 
+// TODO
+/* 
+ upvote
+ downvote
+ add comment
+ add answer
+ edit question (author or admin)
+ change password
+ 
+
+
+*/
 module.exports = router;

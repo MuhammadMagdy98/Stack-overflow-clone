@@ -43,7 +43,6 @@
   align-items: center;
 }
 .question-body-content {
-  width: 800px;
   display: flex;
 }
 .question-body-content p {

@@ -18,22 +18,27 @@ export default function QuestionView(props) {
       </a>
     );
   });
-  const [voteCount, setVoteCount] = useState(0);
+  const [voteCount, setVoteCount] = useState(questionData.votes);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const [voteCasted, setVoteCasted] = useState(false);
   const handleUpVote = () => {
-    setVoteCount(voteCount + 1);
+    if (!voteCasted) setVoteCount(questionData.votes + 1);
+    else setVoteCount(questionData.votes);
+    setVoteCasted(!voteCasted);
   };
 
   const handleDownVote = () => {
-    setVoteCount(voteCount - 1);
+    if (!voteCasted) setVoteCount(questionData.votes - 1);
+    else setVoteCount(questionData.votes);
+    setVoteCasted(!voteCasted);
   };
 
   const handleAddComment = () => {
     setShowCommentContainer(true);
   };
-
 
   const [showCommentContainter, setShowCommentContainer] = useState(false);
 
