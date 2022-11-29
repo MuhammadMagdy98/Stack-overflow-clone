@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DownArrow from "../../assets/caret-down-solid.svg";
 import "./QuestionView-style.css";
 import Comment from "../Comments/Comment";
+import { useParams } from "react-router";
 
 export default function QuestionView(props) {
+  let { id } = useParams();
+  id = parseInt(id) - 1;
+  let questionData = JSON.parse(localStorage.getItem("questions"))[id];
   let tags;
-  tags = props.tags.map((elem) => {
+
+  tags = questionData.tags.map((elem) => {
     return (
-      <a className="question-view-tag-child" href={elem.url}>
+      <a className="question-view-tag-child" href={elem}>
         {" "}
-        {elem.name}
+        {elem}
       </a>
     );
   });
   const [voteCount, setVoteCount] = useState(0);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const handleUpVote = () => {
     setVoteCount(voteCount + 1);
   };
@@ -27,19 +34,13 @@ export default function QuestionView(props) {
     setShowCommentContainer(true);
   };
 
-  const [textAreaStyle, setTextAreaStyle] = useState({
-    width: "50%",
-    backgroundColor: "transparent",
-    resize: "none",
-    padding: "10px",
-  });
 
   const [showCommentContainter, setShowCommentContainer] = useState(false);
 
   return (
     <div className="question-view-container">
       <div className="question-view-title">
-        <h2> {props.title} </h2>
+        <h2> {questionData.title} </h2>
       </div>
       <hr></hr>
       <div className="question-view-body">
@@ -60,7 +61,7 @@ export default function QuestionView(props) {
           ></img>
         </div>
         <div className="question-body-content">
-          <p> {props.body} </p>
+          <p> {questionData.body} </p>
         </div>
       </div>
 
@@ -85,12 +86,12 @@ export default function QuestionView(props) {
       </a>
       {showCommentContainter && (
         <div class="add-comment-containter">
-          <textarea class="comment-textarea">  </textarea>
+          <textarea class="comment-textarea"> </textarea>
           <button class="add-comment-button">Add a comment</button>
         </div>
       )}
       <div class="add-answer-container">
-        <textarea class="answer-textarea">  </textarea>
+        <textarea class="answer-textarea"> </textarea>
         <button class="post-answer-button">Post your answer</button>
       </div>
     </div>

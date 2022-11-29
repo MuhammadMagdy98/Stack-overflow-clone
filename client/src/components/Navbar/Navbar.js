@@ -58,7 +58,7 @@ function Navbar() {
         </li>
         <li>
           {" "}
-          <a href="tags">Tags</a>
+          <a href="/tags">Tags</a>
         </li>
         <li>{isAdmin === 'true' && <a href="add-tags">Add Tag</a>}</li>
       </ul>

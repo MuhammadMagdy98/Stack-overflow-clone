@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/SignUp";
 import Questions from "./components/Questions/Questions";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useParams } from "react-router-dom";
 import { LoginContext } from "./helpers/Context";
 import { TagContext } from "./helpers/Context";
 import Ask from "./components/Ask/Ask";
@@ -20,6 +20,9 @@ function App() {
   const [tags, setTags] = useState([]);
   const questionTitle = 'Why processing sorted arrays is faster than unsorted array?';
   const questionBody = 'Why processing sorted arrays is faster than unsorted array? '
+
+
+  let allQuestions = localStorage.getItem('questions');
   return (
     <Router>
       <div className="App">
@@ -37,16 +40,17 @@ function App() {
           <TagContext.Provider value={{tags, setTags}}>
             <PrivateScreen />
             <Navbar />
-            <QuestionView title={questionTitle} body={questionBody} tags={[{url: 'asadasd', name: 'c++'}, {url: 'asadasd', name: 'c++'}]}/>
+            
 
-            {/* <Routes>
+            <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/questions" element={<Questions />} />
               <Route path="/ask" element={<Ask />} />
               <Route path="/tags" element={<Tags />} />
               <Route path="/add-tags" element={<AddTagForm />} />
-            </Routes> */}
+              <Route path="/question/:id" element={<QuestionView  />} />
+            </Routes>
           </TagContext.Provider>
         </LoginContext.Provider>
       </div>

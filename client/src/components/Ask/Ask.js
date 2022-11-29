@@ -4,9 +4,12 @@ import { TagContext } from "../../helpers/Context";
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { TagCard } from "../TagCard/TagCard";
+import {Navigate, useNavigate} from "react-router-dom";
+
 import "../Tags/Tags-style.css";
 
 export default function Ask() {
+  const navigate = useNavigate();
   const [tags, setTags] = useState([]);
   const [formData, setFormData] = useState({ title: "", body: "", tags: [], author: "" });
   const [inputTag, setInputTag] = useState('');
@@ -19,6 +22,9 @@ export default function Ask() {
       console.log("positing:");
       console.log(formData);
       const response = await axios.post('http://localhost:3001/ask', formData);
+      if (response) {
+        navigate('/questions');
+      }
     } catch(err) {
 
     }
