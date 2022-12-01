@@ -3,27 +3,28 @@ import DownArrow from "../../assets/caret-down-solid.svg";
 import "./QuestionView-style.css";
 import Comment from "../Comments/Comment";
 import { useParams } from "react-router";
+import axios from "axios";
+import saveQuestions from "../../helpers/save-questions";
 
 export default function QuestionView(props) {
   let { id } = useParams();
   id = parseInt(id) - 1;
-  let questionData = JSON.parse(localStorage.getItem("questions"))[id];
-  let tags;
+  console.log(id);
+  const [questionData, setQuestionData] = useState(null);
+  const [number, forceRender] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
 
-  tags = questionData.tags.map((elem) => {
-    return (
-      <a className="question-view-tag-child" href={elem}>
-        {" "}
-        {elem}
-      </a>
-    );
-  });
-  const [voteCount, setVoteCount] = useState(questionData.votes);
+  const [voteCount, setVoteCount] = useState(0);
   useEffect(() => {
+    setQuestionData(JSON.parse(localStorage.getItem("questions")));
+    setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
+    setVoteCount(currentQuestion ? currentQuestion.votes : 0);
     window.scrollTo(0, 0);
+   
   }, []);
 
   const [voteCasted, setVoteCasted] = useState(false);
+  const [comment, setComment] = useState("");
   const handleUpVote = () => {
     if (!voteCasted) setVoteCount(questionData.votes + 1);
     else setVoteCount(questionData.votes);
@@ -40,12 +41,35 @@ export default function QuestionView(props) {
     setShowCommentContainer(true);
   };
 
+  const handleAddCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  const submitComment = async (e) => {
+    const data = {
+      username: localStorage.getItem("username"),
+      body: comment,
+      id: id + 1,
+    };
+    const response = await axios.post("http://localhost:3001/addcomment", data);
+    if (response.status === 201) {
+      console.log(response.data);
+      saveQuestions(response.data);
+      const items =  JSON.parse(localStorage.getItem("questions"));
+      setQuestionData(items);
+
+      setCurrentQuestion(items[id]);
+      
+      setVoteCount(items[id].votes);
+    }
+  };
+
   const [showCommentContainter, setShowCommentContainer] = useState(false);
 
   return (
     <div className="question-view-container">
       <div className="question-view-title">
-        <h2> {questionData.title} </h2>
+        <h2> {currentQuestion && currentQuestion.title} </h2>
       </div>
       <hr></hr>
       <div className="question-view-body">
@@ -66,21 +90,26 @@ export default function QuestionView(props) {
           ></img>
         </div>
         <div className="question-body-content">
-          <p> {questionData.body} </p>
+          <p> {currentQuestion && currentQuestion.body} </p>
         </div>
       </div>
 
-      <div className="question-view-tags">{tags}</div>
+      <div className="question-view-tags">
+        {currentQuestion &&
+          currentQuestion.tags.map((elem) => {
+            return (
+              <a className="question-view-tag-child" href={elem}>
+                {" "}
+                {elem}
+              </a>
+            );
+          })}
+      </div>
 
-      <Comment
-        body={
-          'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.'
-        }
-        url={"/"}
-        username={"na7o"}
-      />
-      <Comment body={"Why are you gay?"} url={"/"} username={"na7o"} />
-      <Comment body={"Why are you gay?"} url={"/"} username={"na7o"} />
+      {currentQuestion &&
+        currentQuestion.comments.map((elem) => {
+          return <Comment body={elem.body} url={"/"} username={elem.user} />;
+        })}
       <a
         class="add-comment"
         onClick={handleAddComment}
@@ -91,8 +120,12 @@ export default function QuestionView(props) {
       </a>
       {showCommentContainter && (
         <div class="add-comment-containter">
-          <textarea class="comment-textarea"> </textarea>
-          <button class="add-comment-button">Add a comment</button>
+          <textarea class="comment-textarea" onChange={handleAddCommentChange}>
+            {" "}
+          </textarea>
+          <button class="add-comment-button" onClick={submitComment}>
+            Add a comment
+          </button>
         </div>
       )}
       <div class="add-answer-container">

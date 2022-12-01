@@ -23,3 +23,17 @@
 .ask-button:hover {
     cursor: pointer;
 }
+
+@media only screen and (max-width: 600px) {
+    .questions-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        
+    
+    }
+
+    .questions-container {
+        margin: 0px;
+    }
+}

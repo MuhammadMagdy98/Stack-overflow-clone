@@ -36,6 +36,8 @@
 
 .question-view-body {
   display: flex;
+  max-width: 800px;
+  white-space: pre-wrap;
 }
 .question-view-score {
   display: flex;
@@ -78,6 +80,7 @@
   width: 100%;
   display: flex;
   align-items: center;
+  max-width: 800px;
 }
 
 .add-comment-button {

@@ -18,6 +18,8 @@ router.post('/ask', userController.askQuestion);
 
 router.get('/getquestions', userController.getQuestions);
 
+router.post('/addcomment', userController.addComment);
+
 // TODO
 /* 
  upvote
