@@ -20,20 +20,19 @@ export default function QuestionView(props) {
     setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
     setVoteCount(currentQuestion ? currentQuestion.votes : 0);
     window.scrollTo(0, 0);
-   
   }, []);
 
   const [voteCasted, setVoteCasted] = useState(false);
   const [comment, setComment] = useState("");
   const handleUpVote = () => {
-    if (!voteCasted) setVoteCount(questionData.votes + 1);
-    else setVoteCount(questionData.votes);
+    if (!voteCasted) setVoteCount(currentQuestion.votes + 1);
+    else setVoteCount(currentQuestion.votes);
     setVoteCasted(!voteCasted);
   };
 
   const handleDownVote = () => {
-    if (!voteCasted) setVoteCount(questionData.votes - 1);
-    else setVoteCount(questionData.votes);
+    if (!voteCasted) setVoteCount(currentQuestion.votes - 1);
+    else setVoteCount(currentQuestion.votes);
     setVoteCasted(!voteCasted);
   };
 
@@ -55,12 +54,13 @@ export default function QuestionView(props) {
     if (response.status === 201) {
       console.log(response.data);
       saveQuestions(response.data);
-      const items =  JSON.parse(localStorage.getItem("questions"));
+      const items = JSON.parse(localStorage.getItem("questions"));
       setQuestionData(items);
 
       setCurrentQuestion(items[id]);
-      
+
       setVoteCount(items[id].votes);
+      setComment("");
     }
   };
 
@@ -110,17 +110,24 @@ export default function QuestionView(props) {
         currentQuestion.comments.map((elem) => {
           return <Comment body={elem.body} url={"/"} username={elem.user} />;
         })}
-      <a
-        class="add-comment"
-        onClick={handleAddComment}
-        style={{ color: "#0000EE" }}
-      >
-        {" "}
-        Add a comment{" "}
-      </a>
+      {
+        !showCommentContainter &&
+        <a
+          class="add-comment"
+          onClick={handleAddComment}
+          style={{ color: "#0000EE" }}
+        >
+          {" "}
+          Add a comment{" "}
+        </a>
+      }
       {showCommentContainter && (
         <div class="add-comment-containter">
-          <textarea class="comment-textarea" onChange={handleAddCommentChange}>
+          <textarea
+            class="comment-textarea"
+            onChange={handleAddCommentChange}
+            value={comment}
+          >
             {" "}
           </textarea>
           <button class="add-comment-button" onClick={submitComment}>

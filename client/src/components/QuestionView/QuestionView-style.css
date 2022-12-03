@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  max-width: 800px;
 }
 
 .question-view-title {
@@ -95,7 +96,7 @@
 }
 
 .comment-textarea {
-  width: 50%;
+  width: 80%;
   background-color: transparent;
   resize: none;
   padding: 10px;
@@ -121,7 +122,7 @@ button:hover {
   border-radius: 5px;
   min-height: 200px;
   background-color: transparent;
-  width: 50%;
+  width: 100%;
   resize: none;
 }
 
