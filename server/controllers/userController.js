@@ -228,6 +228,9 @@ const filterTags = (allTags) => {
   return filteredData;
 };
 
+const vote = asyncHandler(async(req, res) => {
+
+});
 const getTags = asyncHandler(async (req, res) => {
   const allTags = await Tags.find({});
   const filteredData = filterTags(allTags);
@@ -249,4 +252,5 @@ module.exports = {
   askQuestion,
   getQuestions,
   addComment,
+  vote,
 };

@@ -11,6 +11,7 @@ export default function Comment(props) {
           </span>
         </div>
       </div>
+      <hr style={{height: '1px', }}></hr>
     </div>
   );
 }

@@ -20,11 +20,12 @@ router.get('/getquestions', userController.getQuestions);
 
 router.post('/addcomment', userController.addComment);
 
+router.post('/vote', userController.vote);
+
 // TODO
 /* 
  upvote
  downvote
- add comment
  add answer
  edit question (author or admin)
  change password

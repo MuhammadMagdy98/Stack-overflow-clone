@@ -5,6 +5,7 @@ import Comment from "../Comments/Comment";
 import { useParams } from "react-router";
 import axios from "axios";
 import saveQuestions from "../../helpers/save-questions";
+import Answer from "../Answer/Answer";  
 
 export default function QuestionView(props) {
   let { id } = useParams();
@@ -71,7 +72,6 @@ export default function QuestionView(props) {
       <div className="question-view-title">
         <h2> {currentQuestion && currentQuestion.title} </h2>
       </div>
-      <hr></hr>
       <div className="question-view-body">
         <div className="question-view-score">
           <img
@@ -135,6 +135,8 @@ export default function QuestionView(props) {
           </button>
         </div>
       )}
+      <Answer votes={0} body={'Test Test Test Test'}/>
+      
       <div class="add-answer-container">
         <textarea class="answer-textarea"> </textarea>
         <button class="post-answer-button">Post your answer</button>
