@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import saveQuestions from "../../helpers/save-questions";
+import moment from "moment";
 
 export default function Questions() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function Questions() {
             title={elem.title}
             tags={elem.tags}
             author={elem.author}
+            askedTime = {moment(elem.createdAt).fromNow()}
           />
         );
       })}

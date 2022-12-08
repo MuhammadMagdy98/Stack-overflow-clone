@@ -6,6 +6,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { restart } = require("nodemon");
 const question = require("../model/question");
+const moment = require("moment");
 
 const signup = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
@@ -135,6 +136,15 @@ const validTags = async (tags) => {
   return true;
 };
 
+const updateTagsAskedQuestion = async (tags) => {
+  tags.forEach(async (elem) => {
+    const tag = await Tags.findOne({ name: elem });
+    tag.numberOfAskedQuestions = tag.numberOfAskedQuestions + 1;
+
+    await tag.save();
+  });
+};
+
 const askQuestion = asyncHandler(async (req, res) => {
   const { title, body, tags, author } = req.body;
   if (!title || !body || !tags || !author) {
@@ -157,9 +167,18 @@ const askQuestion = asyncHandler(async (req, res) => {
     throw new Error("Invalid tags");
     return;
   }
-  const newId = await Question.findOne({}).count() + 1;
 
-  const createdQuestion = await Question.create({ title, body, tags, author, id: newId });
+  await updateTagsAskedQuestion(tags);
+  const newId = (await Question.findOne({}).count()) + 1;
+
+  const createdQuestion = await Question.create({
+    title,
+    body,
+    tags,
+    author,
+    id: newId,
+    createdAt: moment(),
+  });
   if (!createdQuestion) {
     res.status(400);
     throw new Error("Something went wrong");
@@ -203,7 +222,7 @@ const addComment = asyncHandler(async (req, res) => {
   );
 
   const questions = await Question.find({});
- 
+
   res.status(201).send(questions);
 });
 
@@ -228,8 +247,38 @@ const filterTags = (allTags) => {
   return filteredData;
 };
 
-const vote = asyncHandler(async(req, res) => {
+const vote = asyncHandler(async (req, res) => {
+  // const {questionId, voteValue, answerId}
+  const obj = req.body;
+  if (obj.hasOwn("answerId")) {
+    const { questionId, voteValue, answerId } = req.body;
+    const question = Question.findOne({ id: questionId });
+    if (!question) {
+      throw new Error("Invalid question id");
+      return;
+    }
 
+    if (Math.abs(voteValue) === 1) {
+      question.votes = voteValue;
+
+    } else {
+      throw new Error("Something went wrong");
+    }
+  } else {
+    const { questionId, voteValue} = req.body;
+    if (!questionId || !voteValue) {
+      throw new Error("Invalid data");
+      return;
+    }
+    const question = await Question.findOne({id: questionId});
+    if (Math.abs(voteValue) === 1) {
+      question.votes = question.votes + voteValue;
+      question.save();
+
+    } else {
+      throw new Error("Something went wrong");
+    }
+  }
 });
 const getTags = asyncHandler(async (req, res) => {
   const allTags = await Tags.find({});

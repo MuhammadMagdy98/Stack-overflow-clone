@@ -19,7 +19,7 @@ export default function QuestionCard(props) {
       <div className="question-card-title-container">
         <div className="question-card-title">
           <h3 onClick={handleClick}>
-            <a> {props.title} </a>
+            <a> {props.title.length > 50 ? `${props.title.substring(0, 49)} ...`: props.title} </a>
           </h3>
           <div className="question-tags">
             <div className="question-tags-container">
@@ -30,7 +30,7 @@ export default function QuestionCard(props) {
             <div className="user-info">
               <img alt="user" src={emptyUser}></img>
               <a> {props.author} </a>
-              <span>asked 3 minutes ago</span>
+              <span>asked {props.askedTime} </span>
             </div>
           </div>
         </div>

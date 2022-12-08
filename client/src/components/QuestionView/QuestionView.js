@@ -5,7 +5,7 @@ import Comment from "../Comments/Comment";
 import { useParams } from "react-router";
 import axios from "axios";
 import saveQuestions from "../../helpers/save-questions";
-import Answer from "../Answer/Answer";  
+import Answer from "../Answer/Answer";
 
 export default function QuestionView(props) {
   let { id } = useParams();
@@ -25,9 +25,18 @@ export default function QuestionView(props) {
 
   const [voteCasted, setVoteCasted] = useState(false);
   const [comment, setComment] = useState("");
-  const handleUpVote = () => {
-    if (!voteCasted) setVoteCount(currentQuestion.votes + 1);
-    else setVoteCount(currentQuestion.votes);
+  const handleUpVote = async() => {
+    let add = 1;
+    if (!voteCasted) {
+      setVoteCount(currentQuestion.votes + 1);
+    } else {
+      setVoteCount(currentQuestion.votes);
+      add = 0;
+    }
+    const data = {questionId: id, voteValue: add};
+    const response = await axios.post('http://localhost:3001/vote');
+
+    
     setVoteCasted(!voteCasted);
   };
 
@@ -110,8 +119,7 @@ export default function QuestionView(props) {
         currentQuestion.comments.map((elem) => {
           return <Comment body={elem.body} url={"/"} username={elem.user} />;
         })}
-      {
-        !showCommentContainter &&
+      {!showCommentContainter && (
         <a
           class="add-comment"
           onClick={handleAddComment}
@@ -120,7 +128,7 @@ export default function QuestionView(props) {
           {" "}
           Add a comment{" "}
         </a>
-      }
+      )}
       {showCommentContainter && (
         <div class="add-comment-containter">
           <textarea
@@ -135,8 +143,8 @@ export default function QuestionView(props) {
           </button>
         </div>
       )}
-      <Answer votes={0} body={'Test Test Test Test'}/>
-      
+      <Answer votes={0} body={"Test Test Test Test"} />
+
       <div class="add-answer-container">
         <textarea class="answer-textarea"> </textarea>
         <button class="post-answer-button">Post your answer</button>

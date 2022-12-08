@@ -29,6 +29,10 @@ const questionSchema = new mongoose.Schema({
     required: true,
   },
 
+  createdAt: {
+    type: String
+  },
+
   comments: [{ body: String, user: String, id: Number }],
 
   answerList: [

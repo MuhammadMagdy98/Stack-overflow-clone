@@ -71,6 +71,7 @@
 
 .add-comment {
   color: #0047ee37;
+  margin: 40px 0px 20px 50px;
 }
 
 .add-comment:hover {
@@ -82,6 +83,7 @@
   display: flex;
   align-items: center;
   max-width: 800px;
+  margin-left: 40px;
 }
 
 .add-comment-button {
@@ -92,7 +94,7 @@
   border-radius: 5px;
   height: 40px;
   width: 120px;
-  margin: 10px;
+  margin-left: 20px;
 }
 
 .comment-textarea {
@@ -101,6 +103,7 @@
   resize: none;
   padding: 10px;
   border-radius: 5px;
+  margin-top: 10px;
 }
 button:hover {
   cursor: pointer;
@@ -114,7 +117,7 @@ button:hover {
   border-radius: 5px;
   height: 40px;
   width: 140px;
-  margin: 50px 0px;
+  margin: 50px 40px;
 }
 
 .answer-textarea {
@@ -124,6 +127,7 @@ button:hover {
   background-color: transparent;
   width: 100%;
   resize: none;
+  margin-left: 40px;
 }
 
 .add-answer-container {
