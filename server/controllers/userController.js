@@ -250,8 +250,8 @@ const filterTags = (allTags) => {
 const vote = asyncHandler(async (req, res) => {
   // const {questionId, voteValue, answerId}
   const obj = req.body;
-  if (obj.hasOwn("answerId")) {
-    const { questionId, voteValue, answerId } = req.body;
+  if (Object.hasOwn(obj, "answerId")) {
+    let { questionId, voteValue, answerId } = req.body;
     const question = Question.findOne({ id: questionId });
     if (!question) {
       throw new Error("Invalid question id");
@@ -260,24 +260,90 @@ const vote = asyncHandler(async (req, res) => {
 
     if (Math.abs(voteValue) === 1) {
       question.votes = voteValue;
-
     } else {
       throw new Error("Something went wrong");
     }
   } else {
-    const { questionId, voteValue} = req.body;
-    if (!questionId || !voteValue) {
+    let { questionId, voteValue, token } = req.body;
+    if (!questionId || !voteValue || !token) {
       throw new Error("Invalid data");
       return;
     }
-    const question = await Question.findOne({id: questionId});
-    if (Math.abs(voteValue) === 1) {
-      question.votes = question.votes + voteValue;
-      question.save();
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    } else {
-      throw new Error("Something went wrong");
+    if (!decodedToken) {
+      throw new Error("Invalid token");
+      return;
     }
+    let questionData = await Question.findOne({ id: questionId });
+
+    // if (decodedToken.user === await Question.findOne)
+
+    let user = await User.findById(decodedToken.id);
+    if (!user) {
+      res.status(400).send("Invalid token");
+      return;
+    }
+    if (questionData.author === user.username) {
+      res.status(400).send("Cannot vote to yourself");
+      return;
+    }
+
+    let votesList = user.votesList;
+
+    const alreadyVoted = votesList.find((obj) => {
+      return obj.id === questionId;
+    });
+    const question = await Question.findOne({ id: questionId });
+    let isUpVote = true;
+    if (Math.abs(voteValue) !== 1) {
+      throw new Error("Something went wrong");
+      if (voteValue === -1) isUpVote = false;
+      return;
+    }
+    let response = { state: "done", voteCount: question.votes };
+    let add = voteValue;
+    if (alreadyVoted) {
+      // if the same as the previous vote, reset the vote
+      if (alreadyVoted.voteValue === voteValue) {
+        add = -alreadyVoted.voteValue;
+        response.state = "reset";
+        console.log("heeeeeeey");
+        const newArray = votesList.filter((elem) => {
+          return elem.id !== questionId;
+        });
+
+        console.log("beeep");
+        console.log(newArray);
+        user.votesList = newArray;
+        await user.save();
+      } else {
+        add = voteValue === 1 ? 2 : -2;
+        let index = votesList.findIndex((elem) => {
+          return elem.id === questionId;
+        });
+
+        votesList[index].voteValue = voteValue;
+        user.votesList = votesList;
+        await user.save();
+      }
+    } else {
+      console.log(votesList);
+      votesList.push({
+        isQuestionVote: true,
+        id: questionId,
+        voteValue: voteValue,
+      });
+      user.voteList = votesList;
+      console.log(votesList);
+      await user.save();
+    }
+    question.votes = question.votes + add;
+    await question.save();
+    response.voteCount = question.votes;
+    console.log(user);
+
+    res.status(200).send(response);
   }
 });
 const getTags = asyncHandler(async (req, res) => {

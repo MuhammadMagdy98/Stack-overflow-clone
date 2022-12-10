@@ -19,31 +19,48 @@ export default function QuestionView(props) {
   useEffect(() => {
     setQuestionData(JSON.parse(localStorage.getItem("questions")));
     setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
-    setVoteCount(currentQuestion ? currentQuestion.votes : 0);
+    setVoteCount(JSON.parse(localStorage.getItem("questions"))[id].votes);
     window.scrollTo(0, 0);
   }, []);
 
   const [voteCasted, setVoteCasted] = useState(false);
   const [comment, setComment] = useState("");
-  const handleUpVote = async() => {
-    let add = 1;
-    if (!voteCasted) {
-      setVoteCount(currentQuestion.votes + 1);
+  const handleUpVote = async () => {
+    const data = {
+      questionId: id + 1,
+      voteValue: 1,
+      token: localStorage.getItem("token"),
+    };
+    const response = await axios.post("http://localhost:3001/vote", data);
+    if (response) {
+      if (response.data.state === "done") {
+        setVoteCasted(true);
+      } else {
+        setVoteCasted(false);
+      }
+      setVoteCount(response.data.voteCount);
+      setVoteCasted(!voteCasted);
     } else {
-      setVoteCount(currentQuestion.votes);
-      add = 0;
     }
-    const data = {questionId: id, voteValue: add};
-    const response = await axios.post('http://localhost:3001/vote');
-
-    
-    setVoteCasted(!voteCasted);
   };
 
-  const handleDownVote = () => {
-    if (!voteCasted) setVoteCount(currentQuestion.votes - 1);
-    else setVoteCount(currentQuestion.votes);
-    setVoteCasted(!voteCasted);
+  const handleDownVote = async () => {
+    const data = {
+      questionId: id + 1,
+      voteValue: -1,
+      token: localStorage.getItem("token"),
+    };
+    const response = await axios.post("http://localhost:3001/vote", data);
+    if (response) {
+      if (response.data.state === "done") {
+        setVoteCasted(true);
+      } else {
+        setVoteCasted(false);
+      }
+      setVoteCount(response.data.voteCount);
+      setVoteCasted(!voteCasted);
+    } else {
+    }
   };
 
   const handleAddComment = () => {
