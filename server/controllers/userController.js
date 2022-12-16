@@ -71,12 +71,14 @@ const login = asyncHandler(async (req, res) => {
 
   if (await bcrypt.compare(password, user.password)) {
     console.log(user.isAdmin, user.reputation);
+    console.log(`booooooooooooooooooooooop ${user}  ${typeof(user.votesList)}`);
     res.status(201).json({
       _id: user._id,
       username: user.username,
       email: user.email,
       token: generateToken(user._id),
       isAdmin: user.isAdmin,
+      votesList: user.votesList
     });
   } else {
     res.status(400);
@@ -342,6 +344,7 @@ const vote = asyncHandler(async (req, res) => {
     await question.save();
     response.voteCount = question.votes;
     console.log(user);
+    response.votesList = user.votesList;
 
     res.status(200).send(response);
   }

@@ -4,4 +4,5 @@ export default function updateUser(data) {
     localStorage.setItem('token', data.token);
     localStorage.setItem('email', data.email);
     localStorage.setItem('isAdmin', data.isAdmin);
+    localStorage.setItem('votesList', JSON.stringify(data.votesList));
 }

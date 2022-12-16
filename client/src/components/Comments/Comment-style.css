@@ -14,11 +14,11 @@
     margin-bottom: 10px;
     justify-content: space-between;
     max-width: 800px;
-
 }
 
 .comment-body p {
     text-align: left;
+    word-break: break-all;
 }
 
 .comment-body-aside a {

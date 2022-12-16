@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import DownArrow from "../../assets/caret-down-solid.svg";
+import GreenArrow from "../../assets/caret-green.svg";
+import RedArrow from "../../assets/caret-red.svg";
 import "./QuestionView-style.css";
 import Comment from "../Comments/Comment";
 import { useParams } from "react-router";
 import axios from "axios";
 import saveQuestions from "../../helpers/save-questions";
+import updateVotesList from "../../helpers/update-voteslist";
 import Answer from "../Answer/Answer";
 
 export default function QuestionView(props) {
@@ -23,7 +26,28 @@ export default function QuestionView(props) {
     window.scrollTo(0, 0);
   }, []);
 
-  const [voteCasted, setVoteCasted] = useState(false);
+  const [isUpVote, setIsUpvote] = useState(false);
+  const [isDownVote, setIsDownVote] = useState(false);
+  const userVotedBefore = () => {
+    let jsonList = localStorage.getItem('votesList');
+    if (jsonList === undefined) {
+      return false;
+    }
+    let votesList = JSON.parse(jsonList);
+    console.log(`voteslist == == ${votesList}`);
+    const voted = votesList.find((elem) => {
+      return elem.isQuestionVote && elem.id === id + 1;
+    });
+    if (voted) {
+      setIsUpvote(voted.voteValue === 1);
+      setIsDownVote(voted.voteValue === -1);
+    }
+    return voted ? true : false;
+  };
+
+  const [voteCasted, setVoteCasted] = useState(userVotedBefore);
+  
+
   const [comment, setComment] = useState("");
   const handleUpVote = async () => {
     const data = {
@@ -35,8 +59,14 @@ export default function QuestionView(props) {
     if (response) {
       if (response.data.state === "done") {
         setVoteCasted(true);
+        updateVotesList(response.data.votesList);
+        setIsUpvote(true);
+        setIsDownVote(false);
       } else {
         setVoteCasted(false);
+        updateVotesList(response.data.votesList);
+        setIsUpvote(false);
+        setIsDownVote(false);
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
@@ -54,8 +84,13 @@ export default function QuestionView(props) {
     if (response) {
       if (response.data.state === "done") {
         setVoteCasted(true);
+        setIsUpvote(false);
+        setIsDownVote(true);
+
       } else {
         setVoteCasted(false);
+        setIsUpvote(false);
+        setIsDownVote(false);
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
@@ -101,7 +136,7 @@ export default function QuestionView(props) {
       <div className="question-view-body">
         <div className="question-view-score">
           <img
-            src={DownArrow}
+            src={!isUpVote ? DownArrow : GreenArrow}
             className="question-view-upvote"
             alt="up-vote"
             onClick={handleUpVote}
@@ -109,7 +144,7 @@ export default function QuestionView(props) {
           <div className="question-view-vote-count">{voteCount}</div>
 
           <img
-            src={DownArrow}
+            src={!isDownVote ? DownArrow : RedArrow}
             className="question-view-downvote"
             alt="down-vote"
             onClick={handleDownVote}

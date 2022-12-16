@@ -12,7 +12,7 @@ export default function QuestionCard(props) {
   return (
     <div className="question-card-container">
       <div className="question-card-stats">
-        <p className="vote-count">0 votes</p>
+        <p className="vote-count">{props.votes} votes</p>
         <p className="answer-count">0 answers</p>
         <p className="view-count">0 views</p>
       </div>

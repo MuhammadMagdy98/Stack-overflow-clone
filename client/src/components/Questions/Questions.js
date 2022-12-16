@@ -37,6 +37,7 @@ export default function Questions() {
             tags={elem.tags}
             author={elem.author}
             askedTime = {moment(elem.createdAt).fromNow()}
+            votes={elem.votes}
           />
         );
       })}
