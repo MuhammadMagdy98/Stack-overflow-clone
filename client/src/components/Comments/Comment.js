@@ -1,4 +1,5 @@
 import "./Comment-style.css";
+import moment from "moment"
 export default function Comment(props) {
   return (
     <div className="comment-container">
@@ -7,7 +8,7 @@ export default function Comment(props) {
 
         <div className="comment-body-aside">
           <span>
-            <a href={props.url}>{props.username}</a>
+            <a href={props.url}>{props.username} at {moment(props.createdAt).format('lll')} </a>
           </span>
         </div>
       </div>

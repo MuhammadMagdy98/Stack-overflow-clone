@@ -33,14 +33,15 @@ const questionSchema = new mongoose.Schema({
     type: String
   },
 
-  comments: [{ body: String, user: String, id: Number }],
+  comments: [{ body: String, user: String, id: Number, createdAt: String }],
 
   answerList: [
     {
       body: String,
       votes: Number,
       author: String,
-      comments: [[{ body: String, user: String, id: Number }]],
+      createdAt: String,
+      comments: [{ body: String, user: String, id: Number, createdAt: String }],
     },
   ],
 });

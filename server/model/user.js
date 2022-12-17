@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
 
     tagsList: [],
 
-    votesList: [{isQuestionVote: Boolean, id: Number, voteValue: Number}],
+    votesList: [{isQuestionVote: Boolean, id: Number, voteValue: Number, answerId: Number}],
 
     
 });

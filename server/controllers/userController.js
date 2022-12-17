@@ -36,6 +36,12 @@ const signup = asyncHandler(async (req, res) => {
     email,
     username,
     password: hashedPassword,
+    tagList: [],
+    votesList: [],  
+    questionsList: [],
+    answersList: [], 
+    votesList: [], 
+    isAdmin: false
   });
 
   if (user) {
@@ -44,6 +50,7 @@ const signup = asyncHandler(async (req, res) => {
       username: user.username,
       email: user.email,
       token: generateToken(user._id),
+      votesList: user.votesList
     });
   } else {
     res.status(400);
@@ -53,8 +60,6 @@ const signup = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
-  console.log(req.body);
 
   if (!email || !password) {
     res.status(400);
@@ -70,15 +75,13 @@ const login = asyncHandler(async (req, res) => {
   }
 
   if (await bcrypt.compare(password, user.password)) {
-    console.log(user.isAdmin, user.reputation);
-    console.log(`booooooooooooooooooooooop ${user}  ${typeof(user.votesList)}`);
     res.status(201).json({
       _id: user._id,
       username: user.username,
       email: user.email,
       token: generateToken(user._id),
       isAdmin: user.isAdmin,
-      votesList: user.votesList
+      votesList: user.votesList,
     });
   } else {
     res.status(400);
@@ -180,6 +183,7 @@ const askQuestion = asyncHandler(async (req, res) => {
     author,
     id: newId,
     createdAt: moment(),
+    answerList: []
   });
   if (!createdQuestion) {
     res.status(400);
@@ -191,15 +195,13 @@ const askQuestion = asyncHandler(async (req, res) => {
 });
 
 const addComment = asyncHandler(async (req, res) => {
-  const { username, body, id } = req.body;
-  if (!username || !body || !id) {
+  const { username, body, questionId, answerId } = req.body;
+  if (!username || !body || !questionId) {
     res.status(400);
     throw new Error("Invalid data");
     return;
   }
-
-  const validUserName = await User.findOne({ id: id });
-
+  const validUserName = await User.findOne({ username: username });
   if (!validUserName) {
     res.status(400);
     throw new Error("Unauthorized");
@@ -210,22 +212,45 @@ const addComment = asyncHandler(async (req, res) => {
     throw new Error("Please enter at least 15 characters");
     return;
   }
-
-  const commentId = await Question.findOne({ id: id });
+  const commentId = await Question.findOne({ id: questionId });
 
   if (!commentId) {
     res.status(400);
     throw new Error("Something went wrong");
     return;
   }
-  const createdComment = await Question.updateOne(
-    { id: id },
-    { $push: { comments: { body: body, user: username, id: id } } }
-  );
+  if (!answerId) {
+    const createdComment = await Question.updateOne(
+      { id: questionId },
+      {
+        $push: {
+          comments: {
+            body: body,
+            user: username,
+            createdAt: moment().toString(),
+          },
+        },
+      }
+    );
+    const questions = await Question.find({});
+    res.status(201).send(questions);
+  } else {
+    if (answerId < 0 || answerId > commentId.answerList.length) {
+      res.status(400);
+      throw new Error("Invalid data");
+      return;
+    }
 
-  const questions = await Question.find({});
-
-  res.status(201).send(questions);
+    console.log(commentId.answerList);
+    commentId.answerList[answerId - 1].comments.push({
+      body: body,
+      user: username,
+      createdAt: moment().toString(),
+    });
+    await commentId.save();
+    const questions = await Question.find({});
+    res.status(201).send(questions);
+  }
 });
 
 const getQuestions = asyncHandler(async (req, res) => {
@@ -249,44 +274,141 @@ const filterTags = (allTags) => {
   return filteredData;
 };
 
+const answerQuestion = asyncHandler(async (req, res) => {
+  let { questionId, body, username } = req.body;
+
+  if (!questionId || !body || !username) {
+    res.status(400);
+    throw new Error("Invalid data");
+    return;
+  }
+
+  let validQuestion = await Question.findOne({ id: questionId });
+
+  if (!validQuestion) {
+    res.status(400);
+    throw new Error("Something went wrong");
+    return;
+  }
+
+  if (body.length < 20) {
+    res.status(400);
+    throw new Error("Answer length must be at least 20 characters");
+    return;
+  }
+
+  validQuestion.answerList.push({
+    body: body,
+    votes: 0,
+    author: username,
+    createdAt: moment(),
+  });
+
+  await validQuestion.save();
+
+  res.status(201).send(validQuestion.answerList);
+});
+
 const vote = asyncHandler(async (req, res) => {
   // const {questionId, voteValue, answerId}
+  let { questionId, voteValue, token } = req.body;
+  if (!questionId || !voteValue || !token) {
+    res.status(400).send("Invalid data");
+    return;
+  }
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decodedToken) {
+    res.status(400).send("Invalid token");
+    return;
+  }
+  let user = await User.findById(decodedToken.id);
+  if (!user) {
+    res.status(400).send("Invalid token");
+    return;
+  }
+  let question = await Question.findOne({ id: questionId });
+  if (!question) {
+    res.status(400).send("Invalid question id");
+    return;
+  }
+
   const obj = req.body;
   if (Object.hasOwn(obj, "answerId")) {
-    let { questionId, voteValue, answerId } = req.body;
-    const question = Question.findOne({ id: questionId });
-    if (!question) {
-      throw new Error("Invalid question id");
+    let { questionId, voteValue, answerId, token } = req.body;
+
+    if (answerId < 0 || answerId > question.answerList.length) {
+      res.status(400).send("Invalid data");
       return;
     }
+    if (question.answerList[answerId - 1].author === user.username) {
+      res.status(400).send("Cannot vote to your answer");
+      return;
+    }
+    let votesList = user.votesList;
 
-    if (Math.abs(voteValue) === 1) {
-      question.votes = voteValue;
+    const alreadyVoted = votesList.find((obj) => {
+      return obj.id === questionId && obj.answerId === answerId;
+    });
+    let isUpVote = true;
+    if (Math.abs(voteValue) !== 1) {
+      
+      if (voteValue === -1) isUpVote = false;
+      res.status(400).send("Something went wrong");
+      return;
+    }
+    let response = { state: "done", voteCount: question.answerList[answerId - 1].votes };
+    let add = voteValue;
+    if (alreadyVoted) {
+      // if the same as the previous vote, reset the vote
+      if (alreadyVoted.voteValue === voteValue) {
+        add = -alreadyVoted.voteValue;
+        response.state = "reset";
+        console.log("heeeeeeey");
+        const newArray = votesList.filter((elem) => {
+          return (elem.isQuestionVote) || (elem.answerId !== answerId);
+        });
+
+        console.log("beeep");
+        console.log(newArray);
+        user.votesList = newArray;
+        await user.save();
+      } else {
+        add = voteValue === 1 ? 2 : -2;
+        let index = votesList.findIndex((elem) => {
+          return (elem.id === questionId && elem.answerId === answerId);
+        });
+
+        votesList[index].voteValue = voteValue;
+        user.votesList = votesList;
+        await user.save();
+      }
     } else {
-      throw new Error("Something went wrong");
+      console.log(votesList);
+      votesList.push({
+        isQuestionVote: false,
+        id: questionId,
+        voteValue: voteValue,
+        answerId: answerId
+      });
+      user.voteList = votesList;
+      console.log(votesList);
+      await user.save();
     }
-  } else {
-    let { questionId, voteValue, token } = req.body;
-    if (!questionId || !voteValue || !token) {
-      throw new Error("Invalid data");
-      return;
-    }
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decodedToken) {
-      throw new Error("Invalid token");
-      return;
-    }
+    question.answerList[answerId - 1].votes = question.answerList[answerId - 1].votes + add;
+    await question.save();
+    response.voteCount = question.answerList[answerId - 1].votes;
+    console.log(user);
+    response.votesList = user.votesList;
+
+    res.status(200).send(response);
+    
+  } else {
     let questionData = await Question.findOne({ id: questionId });
 
-    // if (decodedToken.user === await Question.findOne)
 
-    let user = await User.findById(decodedToken.id);
-    if (!user) {
-      res.status(400).send("Invalid token");
-      return;
-    }
-    if (questionData.author === user.username) {
+    if (question.author === user.username) {
       res.status(400).send("Cannot vote to yourself");
       return;
     }
@@ -296,11 +418,12 @@ const vote = asyncHandler(async (req, res) => {
     const alreadyVoted = votesList.find((obj) => {
       return obj.id === questionId;
     });
-    const question = await Question.findOne({ id: questionId });
+    
     let isUpVote = true;
     if (Math.abs(voteValue) !== 1) {
-      throw new Error("Something went wrong");
+      
       if (voteValue === -1) isUpVote = false;
+      res.status(400).send("Something went wrong");
       return;
     }
     let response = { state: "done", voteCount: question.votes };
@@ -371,4 +494,5 @@ module.exports = {
   getQuestions,
   addComment,
   vote,
+  answerQuestion,
 };

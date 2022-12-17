@@ -136,3 +136,14 @@ button:hover {
   display: flex;
   flex-direction: column;
 }
+
+.question-body-bottom {
+
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.question-tags-aside {
+  color: grey;
+}

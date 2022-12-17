@@ -22,10 +22,10 @@ router.post('/addcomment', userController.addComment);
 
 router.post('/vote', userController.vote);
 
+router.post('/answer', userController.answerQuestion);
+
 // TODO
 /* 
- upvote
- downvote
  add answer
  edit question (author or admin)
  change password
