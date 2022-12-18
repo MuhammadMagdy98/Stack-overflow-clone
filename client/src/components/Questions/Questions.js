@@ -38,6 +38,7 @@ export default function Questions() {
             author={elem.author}
             askedTime = {moment(elem.createdAt).fromNow()}
             votes={elem.votes}
+            answersCount={elem.answerList.length}
           />
         );
       })}

@@ -23,6 +23,7 @@
 
 .comment-body-aside a {
     padding: 10px;
+    font-size: 12px;
     text-decoration: none;
     color: hsl(206,100%,40%);
 }

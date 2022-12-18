@@ -145,5 +145,5 @@ button:hover {
 }
 
 .question-tags-aside {
-  color: grey;
+  color: hsl(206,100%,40%);
 }
