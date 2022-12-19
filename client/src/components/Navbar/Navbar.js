@@ -4,7 +4,8 @@ import {
   Routes,
   Route,
   useNavigate,
-  redirect
+  redirect,
+  Link
 } from "react-router-dom";
 import { LoginContext, TagConext } from "../../helpers/Context";
 import { useContext, useEffect } from "react";
@@ -50,17 +51,17 @@ function Navbar() {
       <ul>
         <li>
           {" "}
-          <a href="/questions">Questions</a>
+          <Link to="/questions">Questions</Link>
         </li>
         <li>
           {" "}
-          <a href="users">Users</a>
+          <Link to="/users">Users</Link>
         </li>
         <li>
           {" "}
-          <a href="/tags">Tags</a>
+          <Link to="/tags">Tags</Link>
         </li>
-        <li>{isAdmin === 'true' && <a href="add-tags">Add Tag</a>}</li>
+        <li>{isAdmin === 'true' && <Link to="/add-tags">Add Tag</Link>}</li>
       </ul>
       <div className="nav-button-group">{loginState}</div>
     </nav>

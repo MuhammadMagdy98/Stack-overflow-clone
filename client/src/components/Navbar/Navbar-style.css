@@ -1,8 +1,8 @@
 body {
-    background-color: #E5E5E5;
+    background-color: #171A21;
 }
 .main-nav {
-    background-color: #132E3D;
+    background-color: #27496D;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -26,7 +26,7 @@ ul {
 
 .main-nav li a {
     text-decoration: none;
-    color: white;
+    color: #DEF5E5;
 }
 
 .main-nav li a:hover {

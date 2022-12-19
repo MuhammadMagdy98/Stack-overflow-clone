@@ -3,11 +3,12 @@ p {
 }
 .question-card-container {
     width: 800px;
-    background-color: black;
+    background-color: #2D3047;
     display: flex;
     color: white;
     justify-content: space-between;
     margin-bottom: 10px;
+    border-radius: 7px;
     
 }
 
@@ -48,6 +49,7 @@ p {
 
 .question-tags-container a {
     background-color: grey;
+    border-radius: 7px;
     padding: 3px 13px;
     margin: 5px;
     

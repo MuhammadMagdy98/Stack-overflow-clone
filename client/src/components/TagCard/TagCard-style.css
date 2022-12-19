@@ -1,11 +1,14 @@
 .tag-card-container {
 
     width: 300px;
-    background-color: teal;
+    background-color: #2D3047;
     border-radius: 12px;
     display: flex;
     margin: 20px;
     flex-direction: column;
+    color: white;
+    font-family: open-sans;
+    font-size: 15px;
 }
 .tag-card-container a {
     text-decoration: none;
@@ -14,14 +17,16 @@
     margin: 10px;
     padding: 5px;
     width: fit-content;
+    border-radius: 7px;
+    color: white;
     
 }
 
 .tag-card-container p {
     margin: 10px;
     padding: 5px;
-    font-size: 14px;
-    font-family:'Times New Roman', Times, serif;
+    font-size: 18px;
+    font-family: 'Open Sans';
     text-align: left;
 }
 

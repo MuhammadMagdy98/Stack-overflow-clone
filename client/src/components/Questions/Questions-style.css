@@ -3,6 +3,8 @@
     display: flex;
     justify-content: space-between;
     width: 800px;
+
+    color: white;
     
 
 }
@@ -15,9 +17,10 @@
     width: 100px;
     margin: 15px 0px;
     height: 40px;
-    background-color: #15333D;
+    background-color: #263159;
     color: white;
     border: none;
+    border-radius: 7px;
 }
 
 .ask-button:hover {
