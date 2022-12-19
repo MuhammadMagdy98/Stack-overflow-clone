@@ -86,10 +86,11 @@
   align-items: center;
   max-width: 800px;
   margin-left: 40px;
+  color: white;
 }
 
 .add-comment-button {
-  background-color: teal;
+  background-color: #263159;
   border: none;
   padding: 10px;
   color: white;
@@ -106,6 +107,7 @@
   padding: 10px;
   border-radius: 5px;
   margin-top: 10px;
+  color: white;
 }
 button:hover {
   cursor: pointer;
@@ -122,6 +124,10 @@ button:hover {
   margin: 50px 40px;
 }
 
+textarea:focus, input:focus {
+  outline: none;
+}
+
 .answer-textarea {
   padding: 10px;
   border-radius: 5px;
@@ -130,6 +136,7 @@ button:hover {
   width: 100%;
   resize: none;
   margin-left: 40px;
+  color: white;
 }
 
 .add-answer-container {
