@@ -364,13 +364,10 @@ const vote = asyncHandler(async (req, res) => {
       if (alreadyVoted.voteValue === voteValue) {
         add = -alreadyVoted.voteValue;
         response.state = "reset";
-        console.log("heeeeeeey");
         const newArray = votesList.filter((elem) => {
           return (elem.isQuestionVote) || (elem.answerId !== answerId);
         });
 
-        console.log("beeep");
-        console.log(newArray);
         user.votesList = newArray;
         await user.save();
       } else {
@@ -472,6 +469,43 @@ const vote = asyncHandler(async (req, res) => {
     res.status(200).send(response);
   }
 });
+
+const viewQuestion = asyncHandler(async(req, res) => {
+  const id = req.params.id;
+  const ip = req.ip;
+
+  console.log(`id => ${id}`);
+  console.log(`ip => ${ip}`);
+  if (!id) {
+    res.status(400).send("invalid data");
+    return;
+  }
+  if (!ip) {
+    res.status(400).send("invalid data");
+    return;
+  }
+
+  const question = await Question.findOne({id: id});
+  if (!question) {
+    res.status(400).send("Invalid question id");
+    return;
+  }
+
+  let viewsList = question.viewsList;
+  const alreadyExists = viewsList.find((elem) => {
+    return elem.ip == ip;
+  });
+  if (alreadyExists) {
+    res.status(400).send("already viewed");
+    return;
+  }
+  question.viewsList.push({ip: ip});
+
+  await question.save();
+  console.log("beep");
+  res.status(200).send(JSON.stringify(question.viewsList));
+
+});
 const getTags = asyncHandler(async (req, res) => {
   const allTags = await Tags.find({});
   const filteredData = filterTags(allTags);
@@ -495,4 +529,5 @@ module.exports = {
   addComment,
   vote,
   answerQuestion,
+  viewQuestion,
 };

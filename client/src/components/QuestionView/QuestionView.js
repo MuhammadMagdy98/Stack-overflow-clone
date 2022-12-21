@@ -22,6 +22,17 @@ export default function QuestionView(props) {
 
   const [voteCount, setVoteCount] = useState(0);
   useEffect(() => {
+
+    const viewQuestion = async() => {
+      const response = await axios.post(`http://localhost:3001/question/${id + 1}`);
+
+      if (!response) {
+
+      } else {
+        console.log(response.data);
+      }
+    }
+    viewQuestion();
     setQuestionData(JSON.parse(localStorage.getItem("questions")));
     setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
     setVoteCount(JSON.parse(localStorage.getItem("questions"))[id].votes);

@@ -33,6 +33,8 @@ const questionSchema = new mongoose.Schema({
     type: String
   },
 
+  viewsList: [{ip: String}],
+
   comments: [{ body: String, user: String, id: Number, createdAt: String }],
 
   answerList: [

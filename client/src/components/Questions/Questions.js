@@ -39,6 +39,7 @@ export default function Questions() {
             askedTime = {moment(elem.createdAt).fromNow()}
             votes={elem.votes}
             answersCount={elem.answerList.length}
+            viewsCount={elem.viewsList.length}
           />
         );
       })}

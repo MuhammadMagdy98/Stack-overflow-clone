@@ -24,11 +24,13 @@ router.post('/vote', userController.vote);
 
 router.post('/answer', userController.answerQuestion);
 
+router.post('/question/:id', userController.viewQuestion);
+
 // TODO
 /* 
- add answer
  edit question (author or admin)
  change password
+ update views
  
 
 

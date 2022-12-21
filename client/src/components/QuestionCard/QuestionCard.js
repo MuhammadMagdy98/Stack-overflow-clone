@@ -14,7 +14,7 @@ export default function QuestionCard(props) {
       <div className="question-card-stats">
         <p className="vote-count">{`${props.votes} ${props.votes === 1 ? "vote": "votes"}`} </p>
         <p className="answer-count">{`${props.answersCount} ${props.answersCount === 1 ? "answer" : "answers"}`} </p>
-        <p className="view-count">0 views</p>
+        <p className="view-count">{`${props.viewsCount} ${props.viewsCount === 1 ? "view" : "views"}`}</p>
       </div>
       <div className="question-card-title-container">
         <div className="question-card-title">
