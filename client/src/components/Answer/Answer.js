@@ -120,7 +120,6 @@ function Answer(props) {
         </p>
       </div>
       {props.comments.map((elem) => {
-        console.log("debug eme" + elem.body);
         return (
           <Comment
             body={elem.body}
@@ -134,7 +133,7 @@ function Answer(props) {
         <a
           class="add-comment"
           onClick={handleAddComment}
-          style={{ color: "#0000EE" }}
+          style={{ color: "hsl(206,100%,40%)" }}
         >
           {" "}
           Add a comment{" "}

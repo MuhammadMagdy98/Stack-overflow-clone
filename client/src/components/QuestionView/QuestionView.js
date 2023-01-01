@@ -215,7 +215,7 @@ export default function QuestionView(props) {
         <a
           className="add-comment"
           onClick={handleAddComment}
-          style={{ color: "#0000EE" }}
+          style={{ color: "hsl(206,100%,40%)" }}
         >
           {" "}
           Add a comment{" "}

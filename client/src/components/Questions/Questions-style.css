@@ -23,6 +23,25 @@
     border-radius: 7px;
 }
 
+.questions-control {
+    display: flex;
+    color: white;
+    justify-content: space-between;
+    width: 800px;
+}
+
+.questions-control p {
+    font-size: 20px;
+}
+.questions-filters button {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #263159;
+    border: none;
+    margin: 2px;
+    color: white;
+}
+
 .ask-button:hover {
     cursor: pointer;
 }
