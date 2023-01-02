@@ -473,9 +473,6 @@ const vote = asyncHandler(async (req, res) => {
 const viewQuestion = asyncHandler(async(req, res) => {
   const id = req.params.id;
   const ip = req.ip;
-
-  console.log(`id => ${id}`);
-  console.log(`ip => ${ip}`);
   if (!id) {
     res.status(400).send("invalid data");
     return;

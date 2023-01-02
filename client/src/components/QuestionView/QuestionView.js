@@ -10,7 +10,7 @@ import saveQuestions from "../../helpers/save-questions";
 import updateVotesList from "../../helpers/update-voteslist";
 import Answer from "../Answer/Answer";
 import moment from "moment";
-
+import pluralize from "../../helpers/pluralize";
 
 export default function QuestionView(props) {
   let { id } = useParams();
@@ -22,16 +22,16 @@ export default function QuestionView(props) {
 
   const [voteCount, setVoteCount] = useState(0);
   useEffect(() => {
-
-    const viewQuestion = async() => {
-      const response = await axios.post(`http://localhost:3001/question/${id + 1}`);
+    const viewQuestion = async () => {
+      const response = await axios.post(
+        `http://localhost:3001/question/${id + 1}`
+      );
 
       if (!response) {
-
       } else {
         console.log(response.data);
       }
-    }
+    };
     viewQuestion();
     setQuestionData(JSON.parse(localStorage.getItem("questions")));
     setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
@@ -203,13 +203,21 @@ export default function QuestionView(props) {
             })}
         </div>
         <p className="question-tags-aside">
-          asked by {currentQuestion && currentQuestion.author} at {currentQuestion && moment(currentQuestion.createdAt).format('lll')}
+          asked by {currentQuestion && currentQuestion.author} at{" "}
+          {currentQuestion && moment(currentQuestion.createdAt).format("lll")}
         </p>
       </div>
 
       {currentQuestion &&
         currentQuestion.comments.map((elem) => {
-          return <Comment body={elem.body} url={"/"} username={elem.user} createdAt={elem.createdAt}/>;
+          return (
+            <Comment
+              body={elem.body}
+              url={"/"}
+              username={elem.user}
+              createdAt={elem.createdAt}
+            />
+          );
         })}
       {!showCommentContainter && (
         <a
@@ -235,6 +243,10 @@ export default function QuestionView(props) {
           </button>
         </div>
       )}
+      <div style={{ margin: "40px 0px 20px 50px", fontSize: "20px" }}>
+        {" "}
+        {currentQuestion && pluralize("answer", currentQuestion.answerList.length)}
+      </div>
       {answerList &&
         answerList.map((elem, index) => {
           return (
@@ -243,7 +255,7 @@ export default function QuestionView(props) {
               body={elem.body}
               id={id + 1}
               answerId={index + 1}
-              createdAt = {elem.createdAt}
+              createdAt={elem.createdAt}
               author={elem.author}
               comments={elem.comments}
             />

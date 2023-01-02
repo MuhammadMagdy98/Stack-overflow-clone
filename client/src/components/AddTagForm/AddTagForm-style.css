@@ -2,16 +2,19 @@
     display: flex;
     justify-content: center;
     width: 100%;
+    color: white;
 }
 
 .add-tag-form {
     margin-top: 120px;
     display: flex;
     flex-direction: column;
-    height: 300px;
+    height: 250px;
     width: 500px;
-    background-color: teal;
+    background-color: #2D3047;
     align-items: center;
+    border-radius: 6px;
+    color: white;
 }
 
 .add-tag-form label {
@@ -22,14 +25,21 @@
     width: 300px;
     padding: 10px;
     margin: 10px;
-    border: none;
+    border: 1px solid white;
+    border-radius: 6px;
+    background: none;
+    color: white;
 }
 
 .add-tag-form textarea {
     width: 300px;
     padding: 10px;
     margin: 10px;
-    border: none;
+    border-radius: 6px;
+    resize: none;
+    border: 1px solid white;
+    background: none;
+    color: white;
 }
 
 
@@ -38,6 +48,9 @@
     width: 300px;
     height: 50px;
     border: none;
+    border-radius: 6px;
+    background-color: rgb(255, 46, 99);
+    color: white;
 }
 
 .add-tag-button:hover {
