@@ -1,0 +1,7 @@
+.profile-top-tags-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+  padding: 5px;
+}

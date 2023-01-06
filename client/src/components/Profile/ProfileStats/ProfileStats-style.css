@@ -1,0 +1,21 @@
+.stats {
+  margin-top: 10px;
+  color: white;
+  border: 1px solid white;
+  display: flex;
+  width: 300px;
+  flex-wrap: wrap;
+  height: 150px;
+  border-radius: 6px;
+}
+
+.stats-items {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  flex: 50%;
+}
+
+.stats-items p {
+  color: grey;
+}

@@ -1,0 +1,23 @@
+.profile-top-tags {
+  margin-top: 20px;
+}
+
+
+.profile-top-tags-container {
+  margin-top: 20px;
+  border: 1px solid white;
+  border-radius: 6px;
+  width: 100%;
+}
+
+
+
+.top-tags-div-right {
+  padding: 10px;
+}
+
+.profile-top-tags-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -12,6 +12,7 @@ import PrivateScreen from "./components/Routes/PrivateScreen";
 import { Tags } from "./components/Tags/Tags";
 import { AddTagForm } from "./components/AddTagForm/AddTagForm";
 import QuestionView from "./components/QuestionView/QuestionView";
+import Profile from "./components/Profile/Profile/Profile";
 function App() {
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,9 +37,9 @@ function App() {
           <TagContext.Provider value={{tags, setTags}}>
             <PrivateScreen />
             <Navbar />
-            
+            <Profile about="heyhey"/>
 
-            <Routes>
+            {/* <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/questions" element={<Questions />} />
@@ -46,7 +47,7 @@ function App() {
               <Route path="/tags" element={<Tags />} />
               <Route path="/add-tags" element={<AddTagForm />} />
               <Route path="/question/:id" element={<QuestionView  />} />
-            </Routes>
+            </Routes> */}
           </TagContext.Provider>
         </LoginContext.Provider>
       </div>
