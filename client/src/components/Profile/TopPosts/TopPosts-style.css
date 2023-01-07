@@ -1,0 +1,23 @@
+.top-posts-header-secondline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-posts-header-secondline-right {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-posts-navigations {
+  margin-right: 10px;
+}
+
+.top-post-container {
+  margin-top: 20px;
+  border: 1px solid white;
+  border-radius: 6px;
+}
+.top-posts {
+  margin-top: 20px;
+}

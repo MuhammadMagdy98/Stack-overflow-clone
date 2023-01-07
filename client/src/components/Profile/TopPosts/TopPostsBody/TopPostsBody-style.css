@@ -1,0 +1,20 @@
+.top-posts-body {
+  padding: 10px;
+  display: flex;
+  border-bottom: 1px solid white;
+  align-items: center;
+  width: 100%;
+}
+
+
+.top-posts-body img {
+  width: 20px;
+  height: 20px;
+}
+
+.top-posts-votes-count {
+  padding: 5px 20px;
+  background-color: green;
+  border-radius: 6px;
+  margin: 10px;
+}

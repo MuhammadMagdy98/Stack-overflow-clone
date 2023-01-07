@@ -6,6 +6,7 @@ import "./Profile-style.css";
 import { Link } from "react-router-dom";
 import ProfileStats from "../ProfileStats/ProfileStats";
 import TopTags from "../TopTags/TopTags";
+import TopPosts from "../TopPosts/TopPosts";
 
 export default function Profile(props) {
   return (
@@ -76,6 +77,7 @@ export default function Profile(props) {
             </div>
           )}
           <TopTags/>
+          <TopPosts/>
         </div>
       </div>
     </div>
