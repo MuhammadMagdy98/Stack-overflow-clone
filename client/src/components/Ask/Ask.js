@@ -11,7 +11,7 @@ import "../Tags/Tags-style.css";
 export default function Ask() {
   const navigate = useNavigate();
   const [tags, setTags] = useState([]);
-  const [formData, setFormData] = useState({ title: "", body: "", tags: [], author: "" });
+  const [formData, setFormData] = useState({ title: "", body: "", tags: [], token: "" });
   const [inputTag, setInputTag] = useState('');
   const [cards, setCards] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -68,7 +68,7 @@ export default function Ask() {
       ...state,
       [event.target.name]: event.target.value,
       tags: selectedTags,
-      author: localStorage.getItem("username")
+      token: localStorage.getItem("token")
 
     }));
     console.log(formData);

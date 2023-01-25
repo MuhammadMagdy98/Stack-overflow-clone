@@ -6,7 +6,6 @@ const asyncHandler = require("express-async-handler");
 
 const requireAuth = asyncHandler(async (req, res, next) => {
   const token = req.token;
-  console.log(`token is ${token}`);
   if (!token) {
     res.status(400);
     throw new Error("not authorized");
@@ -21,35 +20,25 @@ const requireAuth = asyncHandler(async (req, res, next) => {
     return;
   }
 
-  console.log(`decodedToken = ${decodedToken}`);
-
   next();
 });
 
 const checkUser = asyncHandler(async (req, res, next) => {
   const token = req.headers.authorization;
-  console.log(`token is ${token}`);
 
   if (!token) {
-    console.log("not authorized");
-    res.status(400);
-    throw new Error("not authorized");
+    res.status(400).send("not authorized");
     return;
   }
 
-  console.log(token);
-
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-
-  console.log(`decoded token ${decodedToken}`);
-  console.log(`decoded token id ${JSON.stringify(decodedToken)}`);
-  let user = await User.findById(decodedToken.id);
+  let user = await User.findById(decodedToken.data.id);
   if (!user) {
     res.status(400);
     throw new Error("not authorized");
     return;
   }
-  res.json({ token: token, username: user.username });
+  res.json({ token: token });
 });
 
 module.exports = {

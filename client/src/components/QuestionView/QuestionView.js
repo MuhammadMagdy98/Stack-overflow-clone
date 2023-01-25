@@ -11,6 +11,7 @@ import updateVotesList from "../../helpers/update-voteslist";
 import Answer from "../Answer/Answer";
 import moment from "moment";
 import pluralize from "../../helpers/pluralize";
+import jwtDecode from "jwt-decode"
 
 export default function QuestionView(props) {
   let { id } = useParams();
@@ -22,17 +23,17 @@ export default function QuestionView(props) {
 
   const [voteCount, setVoteCount] = useState(0);
   useEffect(() => {
-    const viewQuestion = async () => {
-      const response = await axios.post(
-        `http://localhost:3001/question/${id + 1}`
-      );
+    // const viewQuestion = async () => {
+    //   const response = await axios.post(
+    //     `http://localhost:3001/question/${id + 1}`
+    //   );
 
-      if (!response) {
-      } else {
-        console.log(response.data);
-      }
-    };
-    viewQuestion();
+    //   if (!response) {
+    //   } else {
+    //     console.log(response.data);
+    //   }
+    // };
+    // viewQuestion();
     setQuestionData(JSON.parse(localStorage.getItem("questions")));
     setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
     setVoteCount(JSON.parse(localStorage.getItem("questions"))[id].votes);
@@ -43,12 +44,11 @@ export default function QuestionView(props) {
   const [isUpVote, setIsUpvote] = useState(false);
   const [isDownVote, setIsDownVote] = useState(false);
   const userVotedBefore = () => {
-    let jsonList = localStorage.getItem("votesList");
-    if (!jsonList) {
+    
+    let votesList = jwtDecode(localStorage.getItem("token")).data.votesList;
+    if (!votesList) {
       return false;
     }
-    let votesList = JSON.parse(jsonList);
-    console.log(`voteslist == == ${votesList}`);
     const voted = votesList.find((elem) => {
       return elem.isQuestionVote && elem.id === id + 1;
     });
@@ -58,6 +58,8 @@ export default function QuestionView(props) {
     }
     return voted ? true : false;
   };
+
+
 
   const [voteCasted, setVoteCasted] = useState(userVotedBefore);
 
@@ -100,10 +102,12 @@ export default function QuestionView(props) {
         setVoteCasted(true);
         setIsUpvote(false);
         setIsDownVote(true);
+        updateVotesList(response.data.votesList);
       } else {
         setVoteCasted(false);
         setIsUpvote(false);
         setIsDownVote(false);
+        updateVotesList(response.data.votesList);
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
@@ -144,7 +148,7 @@ export default function QuestionView(props) {
 
   const submitComment = async (e) => {
     const data = {
-      username: localStorage.getItem("username"),
+      token: localStorage.getItem("token"),
       body: comment,
       questionId: id + 1,
     };

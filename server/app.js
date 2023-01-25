@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const userRoute = require('./routes/userRoute');
+const questionsRoute = require('./routes/questionsRoute');
 const cors = require('cors');
 
 const { requireAuth, checkUser } = require('./middleware/auth');
@@ -46,3 +47,4 @@ app.listen(port, () => {
 
 app.get('/', checkUser);
 app.use(userRoute);
+app.use(questionsRoute)

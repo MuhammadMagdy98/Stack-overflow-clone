@@ -73,7 +73,7 @@ function Answer(props) {
   };
   const submitComment = async (e) => {
     const data = {
-      username: localStorage.getItem("username"),
+      token: localStorage.getItem("token"),
       body: comment,
       questionId: props.id,
       answerId: props.answerId,

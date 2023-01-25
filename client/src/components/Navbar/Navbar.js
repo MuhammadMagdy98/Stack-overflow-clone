@@ -13,6 +13,7 @@ import { useState } from "react";
 import DownArrow from "../../assets/caret-down-solid.svg";
 
 import UserMenu from "../UserMenu/UserMenu";
+import jwtDecode from "jwt-decode"
 
 function Navbar() {
   let navigate = useNavigate();
@@ -20,16 +21,18 @@ function Navbar() {
   function changeUrl(url) {
     navigate(`/${url}`);
   }
-  let isAdmin = localStorage.getItem('isAdmin');
-  const { setUsername, isLoggedIn, username } =
+  const { setUsername, isLoggedIn, username, isAdmin } =
     useContext(LoginContext);
   const [loginState, setLoginState] = useState();
   console.log(loginState);
-
+  console.log(` isAdmin = ${isAdmin}`);
   useEffect(() => {
     console.log("use effect navbar");
-    if (localStorage.getItem("username")) {
-      const userName = localStorage.getItem("username");
+    console.log("hey");
+    if (localStorage.getItem("token")) {
+
+      console.log(jwtDecode(localStorage.getItem("token")));
+      const userName = jwtDecode(localStorage.getItem("token")).data.username;
       setLoginState(
         <>
           <UserMenu userName={userName} />
@@ -45,7 +48,7 @@ function Navbar() {
     }
     console.log(isLoggedIn);
     console.log(isAdmin);
-  }, [username, isLoggedIn, isAdmin]);
+  }, [localStorage.getItem('token')]);
   return (
     <nav className="main-nav">
       <ul>
@@ -61,7 +64,7 @@ function Navbar() {
           {" "}
           <Link to="/tags">Tags</Link>
         </li>
-        <li>{isAdmin === 'true' && <Link to="/add-tags">Add Tag</Link>}</li>
+        <li>{isAdmin && <Link to="/add-tags">Add Tag</Link>}</li>
       </ul>
       <div className="nav-button-group">{loginState}</div>
     </nav>

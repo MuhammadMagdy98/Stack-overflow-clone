@@ -37,20 +37,22 @@ const signup = asyncHandler(async (req, res) => {
     username,
     password: hashedPassword,
     tagList: [],
-    votesList: [],  
+    votesList: [],
     questionsList: [],
-    answersList: [], 
-    votesList: [], 
-    isAdmin: false
+    answersList: [],
+    votesList: [],
+    isAdmin: false,
   });
 
   if (user) {
     res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user._id),
-      votesList: user.votesList
+      token: generateToken({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        votesList: user.votesList,
+      })
     });
   } else {
     res.status(400);
@@ -76,12 +78,14 @@ const login = asyncHandler(async (req, res) => {
 
   if (await bcrypt.compare(password, user.password)) {
     res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user._id),
-      isAdmin: user.isAdmin,
-      votesList: user.votesList,
+      token: generateToken({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        votesList: user.votesList,
+      }),
+      
     });
   } else {
     res.status(400);
@@ -151,18 +155,20 @@ const updateTagsAskedQuestion = async (tags) => {
 };
 
 const askQuestion = asyncHandler(async (req, res) => {
-  const { title, body, tags, author } = req.body;
-  if (!title || !body || !tags || !author) {
-    res.status(400);
-    throw new Error("Invalid data");
+  const { title, body, tags, token } = req.body;
+  if (!title || !body || !tags || !token) {
+    res.status(400).send("Invalid data");
     return;
   }
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  if (!decodedToken) {
+    res.status(400).send("Unauthorized");
+    return;
+  }
+  const user = await User.findOne({ _id: decodedToken.data.id });
 
-  const validAuthor = await User.findOne({ username: author });
-
-  if (!validAuthor) {
-    res.status(400);
-    throw new Error("Unauthorized");
+  if (!user) {
+    res.status(400).send("Unauthorized");
     return;
   }
 
@@ -180,10 +186,10 @@ const askQuestion = asyncHandler(async (req, res) => {
     title,
     body,
     tags,
-    author,
+    author: user.username,
     id: newId,
     createdAt: moment(),
-    answerList: []
+    answerList: [],
   });
   if (!createdQuestion) {
     res.status(400);
@@ -195,13 +201,14 @@ const askQuestion = asyncHandler(async (req, res) => {
 });
 
 const addComment = asyncHandler(async (req, res) => {
-  const { username, body, questionId, answerId } = req.body;
-  if (!username || !body || !questionId) {
+  const { token, body, questionId, answerId } = req.body;
+  if (!body || !questionId || !token) {
     res.status(400);
     throw new Error("Invalid data");
     return;
   }
-  const validUserName = await User.findOne({ username: username });
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const validUserName = await User.findOne({ username: decodedToken.data.username });
   if (!validUserName) {
     res.status(400);
     throw new Error("Unauthorized");
@@ -226,7 +233,7 @@ const addComment = asyncHandler(async (req, res) => {
         $push: {
           comments: {
             body: body,
-            user: username,
+            user: decodedToken.data.username,
             createdAt: moment().toString(),
           },
         },
@@ -244,7 +251,7 @@ const addComment = asyncHandler(async (req, res) => {
     console.log(commentId.answerList);
     commentId.answerList[answerId - 1].comments.push({
       body: body,
-      user: username,
+      user: decodedToken.data.username,
       createdAt: moment().toString(),
     });
     await commentId.save();
@@ -255,8 +262,6 @@ const addComment = asyncHandler(async (req, res) => {
 
 const getQuestions = asyncHandler(async (req, res) => {
   const allQuestions = await Question.find({});
-  console.log(allQuestions);
-  console.log("get all questions");
   res.status(201).send(allQuestions);
 });
 
@@ -322,7 +327,7 @@ const vote = asyncHandler(async (req, res) => {
     res.status(400).send("Invalid token");
     return;
   }
-  let user = await User.findById(decodedToken.id);
+  let user = await User.findById(decodedToken.data.id);
   if (!user) {
     res.status(400).send("Invalid token");
     return;
@@ -352,12 +357,14 @@ const vote = asyncHandler(async (req, res) => {
     });
     let isUpVote = true;
     if (Math.abs(voteValue) !== 1) {
-      
       if (voteValue === -1) isUpVote = false;
       res.status(400).send("Something went wrong");
       return;
     }
-    let response = { state: "done", voteCount: question.answerList[answerId - 1].votes };
+    let response = {
+      state: "done",
+      voteCount: question.answerList[answerId - 1].votes,
+    };
     let add = voteValue;
     if (alreadyVoted) {
       // if the same as the previous vote, reset the vote
@@ -365,7 +372,7 @@ const vote = asyncHandler(async (req, res) => {
         add = -alreadyVoted.voteValue;
         response.state = "reset";
         const newArray = votesList.filter((elem) => {
-          return (elem.isQuestionVote) || (elem.answerId !== answerId);
+          return elem.isQuestionVote || elem.answerId !== answerId;
         });
 
         user.votesList = newArray;
@@ -373,7 +380,7 @@ const vote = asyncHandler(async (req, res) => {
       } else {
         add = voteValue === 1 ? 2 : -2;
         let index = votesList.findIndex((elem) => {
-          return (elem.id === questionId && elem.answerId === answerId);
+          return elem.id === questionId && elem.answerId === answerId;
         });
 
         votesList[index].voteValue = voteValue;
@@ -386,24 +393,23 @@ const vote = asyncHandler(async (req, res) => {
         isQuestionVote: false,
         id: questionId,
         voteValue: voteValue,
-        answerId: answerId
+        answerId: answerId,
       });
       user.voteList = votesList;
       console.log(votesList);
       await user.save();
     }
 
-    question.answerList[answerId - 1].votes = question.answerList[answerId - 1].votes + add;
+    question.answerList[answerId - 1].votes =
+      question.answerList[answerId - 1].votes + add;
     await question.save();
     response.voteCount = question.answerList[answerId - 1].votes;
     console.log(user);
     response.votesList = user.votesList;
-
+    response.token = generateToken()
     res.status(200).send(response);
-    
   } else {
     let questionData = await Question.findOne({ id: questionId });
-
 
     if (question.author === user.username) {
       res.status(400).send("Cannot vote to yourself");
@@ -415,10 +421,9 @@ const vote = asyncHandler(async (req, res) => {
     const alreadyVoted = votesList.find((obj) => {
       return obj.id === questionId;
     });
-    
+
     let isUpVote = true;
     if (Math.abs(voteValue) !== 1) {
-      
       if (voteValue === -1) isUpVote = false;
       res.status(400).send("Something went wrong");
       return;
@@ -470,7 +475,7 @@ const vote = asyncHandler(async (req, res) => {
   }
 });
 
-const viewQuestion = asyncHandler(async(req, res) => {
+const viewQuestion = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const ip = req.ip;
   if (!id) {
@@ -482,7 +487,7 @@ const viewQuestion = asyncHandler(async(req, res) => {
     return;
   }
 
-  const question = await Question.findOne({id: id});
+  const question = await Question.findOne({ id: id });
   if (!question) {
     res.status(400).send("Invalid question id");
     return;
@@ -496,12 +501,11 @@ const viewQuestion = asyncHandler(async(req, res) => {
     res.status(400).send("already viewed");
     return;
   }
-  question.viewsList.push({ip: ip});
+  question.viewsList.push({ ip: ip });
 
   await question.save();
   console.log("beep");
   res.status(200).send(JSON.stringify(question.viewsList));
-
 });
 const getTags = asyncHandler(async (req, res) => {
   const allTags = await Tags.find({});
@@ -510,8 +514,8 @@ const getTags = asyncHandler(async (req, res) => {
   res.status(201).send(filteredData);
 });
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (data) => {
+  return jwt.sign({ data }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };

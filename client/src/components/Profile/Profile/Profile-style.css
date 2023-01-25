@@ -3,59 +3,6 @@
   color: white;
   text-align: left;
 }
-.profile-header-image {
-  width: 100px;
-  height: 100%;
-  margin-right: 20px;
-  border-radius: 6px;
-}
-
-.profile-header {
-  display: flex;
-}
-
-.profile-header-info {
-  text-align: left;
-  width: 100%;
-}
-
-.profile-header-info-title {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-
-.edit-profile-button {
-  width: 100px;
-  margin: 15px 0px;
-  height: 40px;
-  background-color: #263159;
-  color: white;
-  border: none;
-  border-radius: 7px;
-}
-
-.birthday-img {
-  width: 20px;
-  height: 20px
-}
-
-.calendar-img {
-  width: 20px;
-  height: 20px;
-}
-.profile-links-group {
-  display: flex;
-}
-.profile-page-links {
-  text-decoration: none;
-  color: white;
-  background-color: #263159;
-  border-radius: 6px;
-  padding: 5px 10px;
-  margin: 2px;
-}
 
 .profile-body {
   display: flex;

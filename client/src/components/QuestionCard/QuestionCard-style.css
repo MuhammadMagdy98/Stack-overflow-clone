@@ -64,10 +64,10 @@ p {
     margin-right: 5px;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 800px) {
     .question-card-container {
         width: 100%;
-        background-color: black;
+        background-color: #2D3047;
         display: flex;
         color: white;
         justify-content: space-between;

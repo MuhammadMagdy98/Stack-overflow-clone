@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import {useNavigate} from "react-router-dom";
 import { useContext } from 'react';
 import updateUser from "../../helpers/updateuser";
+import jwtDecode from "jwt-decode"
 
 export default function Login() {
   const [loginData, setLoginData] = useState({
@@ -26,17 +27,19 @@ export default function Login() {
         "http://localhost:3001/login",
         loginData
       );
-      console.log(response.data);
-      setUsername(response.data.username);
+      
+      let decodedToken = jwtDecode(response.data.token);
+      
+      setUsername(decodedToken.username);
 
       setIsLoggedIn(true);
 
-      setIsAdmin(response.data.isAdmin);
+      setIsAdmin(decodedToken.isAdmin);
       
+      console.log(response.data.token);
 
-      updateUser(response.data);
+      updateUser(response.data.token);
 
-      console.log(isLoggedIn);
       navigate('/');
       
     } catch (err) {
