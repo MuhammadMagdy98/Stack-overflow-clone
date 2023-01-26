@@ -7,16 +7,15 @@ import saveQuestions from "../../helpers/save-questions";
 import moment from "moment";
 
 export default function Questions() {
-  const [paginationBackground, setPaginationBackground] = useState('#263159');
   let linkStyle = {
     textDecoration: "none",
     padding: "8px",
     margin: "2px",
     borderRadius: "6px",
-    backgroundColor: paginationBackground,
+    backgroundColor: "#263159",
     color: "white",
   };
- 
+
   const navigate = useNavigate();
   const [questionsData, setQuestionsData] = useState([]);
   const [questionsCount, setQuestionsCount] = useState(0);
@@ -51,48 +50,59 @@ export default function Questions() {
     e.preventDefault();
     setCurrentPage(e.target.name);
     console.log(e.target.name);
-    
   };
   const [pagesData, setPagesData] = useState([]);
   useEffect(() => {
-    setPagesData(
-      [...Array(pageCount)].map((_, i) => {
-        let tmpObj = {...linkStyle};
-        if (i + 1 == currentPage) {
-          tmpObj.backgroundColor = 'rgb(255, 46, 99)';
-        }
-        return (
-          <Link to="#" style={tmpObj} name={i + 1} onClick={handlePageClick}>
-            {i + 1}
+    let toRender = [];
+    if (currentPage < 5) {
+      for (let i = 2; i <= Math.min(pageCount - 1, 5); i++) {
+        toRender.push(
+          <Link
+            to="#"
+            style={{
+              ...linkStyle,
+              backgroundColor:
+                currentPage == i ? "rgb(255, 46, 99)" : "#263159",
+            }}
+            name={i}
+            onClick={handlePageClick}
+          >
+            {i}
           </Link>
         );
-      })
-    );
+      }
+    } else {
+      for (let i = currentPage - 2; i <= Math.min(currentPage + 2, pageCount - 1); i++) {
+        toRender.push(
+          <Link
+            to="#"
+            style={{
+              ...linkStyle,
+              backgroundColor:
+                currentPage == i ? "rgb(255, 46, 99)" : "#263159",
+            }}
+            name={i}
+            onClick={handlePageClick}
+          >
+            {i}
+          </Link>
+        );
+      }
+    }
+    setPagesData(toRender);
   }, [pageCount, currentPage]);
 
   const handleActive = () => {};
 
   const handleNewest = () => {
-    const questions = localStorage.getItem("questions");
-    setQuestionsData(JSON.parse(questions));
     setFilterBy("newest");
   };
 
   const handleUnanswered = () => {
-    const unansweredQuestions = questionsData.filter((elem) => {
-      return elem.answerList.length === 0;
-    });
-    setQuestionsData(unansweredQuestions);
     setFilterBy("unanswered");
   };
 
   const handleScore = () => {
-    const questions = JSON.parse(localStorage.getItem("questions"));
-    questions.sort((lhs, rhs) => {
-      return rhs.votes - lhs.votes;
-    });
-
-    setQuestionsData(questions);
     setFilterBy("score");
   };
   return (
@@ -164,33 +174,95 @@ export default function Questions() {
             <Link
               to="#"
               style={linkStyle}
-              onClick={() => setCurrentPage((prevPage) => prevPage - 1)}
+              onClick={() =>
+                setCurrentPage((prevPage) => parseInt(prevPage) - 1)
+              }
             >
               Prev
             </Link>
           )}
+          {
+            <Link
+              to="#"
+              style={{
+                ...linkStyle,
+                backgroundColor:
+                  currentPage == 1 ? "rgb(255, 46, 99)" : "#263159",
+              }}
+              name={1}
+              onClick={handlePageClick}
+            >
+              1
+            </Link>
+          }
           {pagesData}
+          {
+            <Link
+              to="#"
+              style={{
+                ...linkStyle,
+                backgroundColor:
+                  currentPage == pageCount ? "rgb(255, 46, 99)" : "#263159",
+              }}
+              name={pageCount}
+              onClick={handlePageClick}
+            >
+              {pageCount}
+            </Link>
+          }
+          {currentPage < pageCount && (
+            <Link
+              to="#"
+              style={linkStyle}
+              onClick={() =>
+                setCurrentPage((prevPage) => parseInt(prevPage) + 1)
+              }
+            >
+              Next
+            </Link>
+          )}
         </div>
         <div className="per-page">
           <span>Per page</span>
           <Link
             to="#"
-            style={{...linkStyle, backgroundColor: questionsPerPage === 15 ?  'rgb(255, 46, 99)':  ''}}
-            onClick={() => {setQuestionsPerPage(15); setCurrentPage(1)}}
+            style={{
+              ...linkStyle,
+              backgroundColor:
+                questionsPerPage === 15 ? "rgb(255, 46, 99)" : "",
+            }}
+            onClick={() => {
+              setQuestionsPerPage(15);
+              setCurrentPage(1);
+            }}
           >
             15
           </Link>
           <Link
             to="#"
-            style={{...linkStyle, backgroundColor: questionsPerPage === 30 ?  'rgb(255, 46, 99)':  ''}}
-            onClick={() => {setQuestionsPerPage(30); setCurrentPage(1)}}
+            style={{
+              ...linkStyle,
+              backgroundColor:
+                questionsPerPage === 30 ? "rgb(255, 46, 99)" : "",
+            }}
+            onClick={() => {
+              setQuestionsPerPage(30);
+              setCurrentPage(1);
+            }}
           >
             30
           </Link>
           <Link
             to="#"
-            style={{...linkStyle, backgroundColor: questionsPerPage === 50 ?  'rgb(255, 46, 99)':  ''}}
-            onClick={() => {setQuestionsPerPage(50); setCurrentPage(1)}}
+            style={{
+              ...linkStyle,
+              backgroundColor:
+                questionsPerPage === 50 ? "rgb(255, 46, 99)" : "",
+            }}
+            onClick={() => {
+              setQuestionsPerPage(50);
+              setCurrentPage(1);
+            }}
           >
             50
           </Link>

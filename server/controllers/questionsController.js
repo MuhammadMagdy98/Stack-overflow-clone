@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const question = require("../model/question");
 const Question = require("../model/question");
 
 const getQuestions = asyncHandler(async (req, res) => {
@@ -18,33 +17,32 @@ const getQuestions = asyncHandler(async (req, res) => {
     return;
   }
 
-  const questions = await Question.find({});
+  let questions = await Question.find({});
+  if (tab === "score") {
+    questions.sort((a, b) => {
+      return b.votes - a.votes;
+    });
+  } else if (tab === "unanswered") {
+    questions = questions.filter((elem) => {
+      return elem.answerList.length === 0;
+    });
+  }
   const totalPages = Math.ceil(questions.length / perpage);
   if (page > totalPages) {
     res.status(400).send("invalid page number");
     return;
   }
-  const questionsCount = questions.length;
+  let questionsCount = questions.length;
+
   const startIndex = (page - 1) * perpage;
   const endIndex = Math.min(startIndex + perpage, questions.length);
   console.log(startIndex, endIndex);
- 
-  const result = {questionsCount: questionsCount, questions: questions.slice(startIndex, endIndex)};
+
+  const result = {
+    questionsCount: questionsCount,
+    questions: questions.slice(startIndex, endIndex),
+  };
   res.status(200).send(result);
-  switch (tab) {
-    case "newest":
-
-    case "active":
-
-    case "unanswered":
-
-    case "score":
-
-    default:
-    // TODO
-  }
-  console.log(req.query);
-  console.log("heyyyooo");
 });
 
 module.exports = {
