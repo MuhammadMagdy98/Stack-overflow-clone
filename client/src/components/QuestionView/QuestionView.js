@@ -15,59 +15,53 @@ import jwtDecode from "jwt-decode"
 
 export default function QuestionView(props) {
   let { id } = useParams();
-  id = parseInt(id) - 1;
-  console.log(id);
-  const [questionData, setQuestionData] = useState(null);
+  id = parseInt(id);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [answerList, setAnswerList] = useState([]);
 
   const [voteCount, setVoteCount] = useState(0);
   useEffect(() => {
-    // const viewQuestion = async () => {
-    //   const response = await axios.post(
-    //     `http://localhost:3001/question/${id + 1}`
-    //   );
+    const viewQuestion = async () => {
+      const response = await axios.post(
+        `http://localhost:3001/question/${id}`
+      );
 
-    //   if (!response) {
-    //   } else {
-    //     console.log(response.data);
-    //   }
-    // };
-    // viewQuestion();
-    setQuestionData(JSON.parse(localStorage.getItem("questions")));
-    setCurrentQuestion(JSON.parse(localStorage.getItem("questions"))[id]);
-    setVoteCount(JSON.parse(localStorage.getItem("questions"))[id].votes);
-    setAnswerList(JSON.parse(localStorage.getItem("questions"))[id].answerList);
+      if (!response) {
+      } else {
+        console.log(response.data);
+        setCurrentQuestion(response.data.question);
+        setVoteCount(response.data.question.votes);
+        setAnswerList(response.data.question.answerList);
+      }
+    };
+    viewQuestion();
     window.scrollTo(0, 0);
   }, []);
 
   const [isUpVote, setIsUpvote] = useState(false);
   const [isDownVote, setIsDownVote] = useState(false);
-  const userVotedBefore = () => {
-    
+
+  useEffect(() => {
     let votesList = jwtDecode(localStorage.getItem("token")).data.votesList;
-    if (!votesList) {
-      return false;
-    }
     const voted = votesList.find((elem) => {
-      return elem.isQuestionVote && elem.id === id + 1;
+      return elem.isQuestionVote && elem.id === id;
     });
     if (voted) {
       setIsUpvote(voted.voteValue === 1);
       setIsDownVote(voted.voteValue === -1);
+      setVoteCasted(true);
     }
-    return voted ? true : false;
-  };
+  }, []);
 
 
 
-  const [voteCasted, setVoteCasted] = useState(userVotedBefore);
+  const [voteCasted, setVoteCasted] = useState(false);
 
   const [comment, setComment] = useState("");
   const [answer, setAnswer] = useState("");
   const handleUpVote = async () => {
     const data = {
-      questionId: id + 1,
+      questionId: id,
       voteValue: 1,
       token: localStorage.getItem("token"),
     };
@@ -75,15 +69,17 @@ export default function QuestionView(props) {
     if (response) {
       if (response.data.state === "done") {
         setVoteCasted(true);
-        updateVotesList(response.data.votesList);
+        
+        // updateVotesList(response.data.votesList);
         setIsUpvote(true);
         setIsDownVote(false);
       } else {
         setVoteCasted(false);
-        updateVotesList(response.data.votesList);
+        // updateVotesList(response.data.votesList);
         setIsUpvote(false);
         setIsDownVote(false);
       }
+      localStorage.setItem('token', response.data.token);
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
     } else {
@@ -92,7 +88,7 @@ export default function QuestionView(props) {
 
   const handleDownVote = async () => {
     const data = {
-      questionId: id + 1,
+      questionId: id,
       voteValue: -1,
       token: localStorage.getItem("token"),
     };
@@ -102,15 +98,16 @@ export default function QuestionView(props) {
         setVoteCasted(true);
         setIsUpvote(false);
         setIsDownVote(true);
-        updateVotesList(response.data.votesList);
+        // updateVotesList(response.data.votesList);
       } else {
         setVoteCasted(false);
         setIsUpvote(false);
         setIsDownVote(false);
-        updateVotesList(response.data.votesList);
+        // updateVotesList(response.data.votesList);
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
+      localStorage.setItem('token', response.data.token);
     } else {
     }
   };
@@ -129,16 +126,16 @@ export default function QuestionView(props) {
 
   const addAnswer = async () => {
     let data = {
-      questionId: id + 1,
+      questionId: id,
       body: answer,
-      username: localStorage.getItem("username"),
+      token: localStorage.getItem("token"),
     };
     let response = await axios.post("http://localhost:3001/answer", data);
 
     if (response) {
       setAnswerList(response.data);
       setCurrentQuestion({ ...currentQuestion, answerList: response.data });
-      localStorage.setItem("answerList", response.data);
+    
     } else {
       //TODO
     }
@@ -150,18 +147,13 @@ export default function QuestionView(props) {
     const data = {
       token: localStorage.getItem("token"),
       body: comment,
-      questionId: id + 1,
+      questionId: id,
     };
     const response = await axios.post("http://localhost:3001/addcomment", data);
     if (response.status === 201) {
-      console.log(response.data);
-      saveQuestions(response.data);
-      const items = JSON.parse(localStorage.getItem("questions"));
-      setQuestionData(items);
-
-      setCurrentQuestion(items[id]);
-
-      setVoteCount(items[id].votes);
+      console.log(response.data.question);
+      setCurrentQuestion(response.data.question[0]);
+      setVoteCount(response.data.question[0].votes);
       setComment("");
     }
   };
@@ -197,9 +189,9 @@ export default function QuestionView(props) {
       <div className="question-body-bottom">
         <div className="question-view-tags">
           {currentQuestion &&
-            currentQuestion.tags.map((elem) => {
+            currentQuestion.tags.map((elem, i) => {
               return (
-                <a className="question-view-tag-child" href={elem}>
+                <a className="question-view-tag-child" href={elem} key={i}>
                   {" "}
                   {elem}
                 </a>
@@ -213,9 +205,10 @@ export default function QuestionView(props) {
       </div>
 
       {currentQuestion &&
-        currentQuestion.comments.map((elem) => {
+        currentQuestion.comments.map((elem, i) => {
           return (
             <Comment
+              key={i}
               body={elem.body}
               url={"/"}
               username={elem.user}
@@ -255,9 +248,10 @@ export default function QuestionView(props) {
         answerList.map((elem, index) => {
           return (
             <Answer
+              key={index}
               votes={elem.votes}
               body={elem.body}
-              id={id + 1}
+              id={id}
               answerId={index + 1}
               createdAt={elem.createdAt}
               author={elem.author}

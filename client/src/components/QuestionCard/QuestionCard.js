@@ -23,8 +23,8 @@ export default function QuestionCard(props) {
           </h3>
           <div className="question-tags">
             <div className="question-tags-container">
-              {props.tags.map((elem) => {
-                return <a> {elem} </a>
+              {props.tags.map((elem, i) => {
+                return <a key={i}> {elem} </a>
               })}
             </div>
             <div className="user-info">

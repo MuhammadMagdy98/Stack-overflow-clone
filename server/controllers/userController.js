@@ -52,7 +52,7 @@ const signup = asyncHandler(async (req, res) => {
         email: user.email,
         isAdmin: user.isAdmin,
         votesList: user.votesList,
-      })
+      }),
     });
   } else {
     res.status(400);
@@ -85,7 +85,6 @@ const login = asyncHandler(async (req, res) => {
         isAdmin: user.isAdmin,
         votesList: user.votesList,
       }),
-      
     });
   } else {
     res.status(400);
@@ -208,7 +207,9 @@ const addComment = asyncHandler(async (req, res) => {
     return;
   }
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  const validUserName = await User.findOne({ username: decodedToken.data.username });
+  const validUserName = await User.findOne({
+    username: decodedToken.data.username,
+  });
   if (!validUserName) {
     res.status(400);
     throw new Error("Unauthorized");
@@ -239,8 +240,8 @@ const addComment = asyncHandler(async (req, res) => {
         },
       }
     );
-    const questions = await Question.find({});
-    res.status(201).send(questions);
+    const question = await Question.find({ id: questionId });
+    res.status(201).send({ question: question });
   } else {
     if (answerId < 0 || answerId > commentId.answerList.length) {
       res.status(400);
@@ -255,7 +256,7 @@ const addComment = asyncHandler(async (req, res) => {
       createdAt: moment().toString(),
     });
     await commentId.save();
-    const questions = await Question.find({});
+    const questions = await Question.find({ id: questionId });
     res.status(201).send(questions);
   }
 });
@@ -280,11 +281,20 @@ const filterTags = (allTags) => {
 };
 
 const answerQuestion = asyncHandler(async (req, res) => {
-  let { questionId, body, username } = req.body;
+  let { questionId, body, token } = req.body;
 
-  if (!questionId || !body || !username) {
+  if (!questionId || !body || !token) {
     res.status(400);
     throw new Error("Invalid data");
+    return;
+  }
+
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  const validUserName = await User.findOne({
+    username: decodedToken.data.username,
+  });
+  if (!validUserName) {
+    res.status(400).send("Unauthorized");
     return;
   }
 
@@ -305,7 +315,7 @@ const answerQuestion = asyncHandler(async (req, res) => {
   validQuestion.answerList.push({
     body: body,
     votes: 0,
-    author: username,
+    author: decodedToken.data.username,
     createdAt: moment(),
   });
 
@@ -337,16 +347,18 @@ const vote = asyncHandler(async (req, res) => {
     res.status(400).send("Invalid question id");
     return;
   }
-
   const obj = req.body;
+  
+
   if (Object.hasOwn(obj, "answerId")) {
     let { questionId, voteValue, answerId, token } = req.body;
-
     if (answerId < 0 || answerId > question.answerList.length) {
       res.status(400).send("Invalid data");
       return;
     }
     if (question.answerList[answerId - 1].author === user.username) {
+      console.log(answerId);
+
       res.status(400).send("Cannot vote to your answer");
       return;
     }
@@ -396,7 +408,6 @@ const vote = asyncHandler(async (req, res) => {
         answerId: answerId,
       });
       user.voteList = votesList;
-      console.log(votesList);
       await user.save();
     }
 
@@ -406,7 +417,14 @@ const vote = asyncHandler(async (req, res) => {
     response.voteCount = question.answerList[answerId - 1].votes;
     console.log(user);
     response.votesList = user.votesList;
-    response.token = generateToken()
+    response.token = generateToken({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      votesList: user.votesList,
+    });
+
     res.status(200).send(response);
   } else {
     let questionData = await Question.findOne({ id: questionId });
@@ -417,10 +435,11 @@ const vote = asyncHandler(async (req, res) => {
     }
 
     let votesList = user.votesList;
-
     const alreadyVoted = votesList.find((obj) => {
+  
       return obj.id === questionId;
     });
+
 
     let isUpVote = true;
     if (Math.abs(voteValue) !== 1) {
@@ -435,13 +454,9 @@ const vote = asyncHandler(async (req, res) => {
       if (alreadyVoted.voteValue === voteValue) {
         add = -alreadyVoted.voteValue;
         response.state = "reset";
-        console.log("heeeeeeey");
         const newArray = votesList.filter((elem) => {
           return elem.id !== questionId;
         });
-
-        console.log("beeep");
-        console.log(newArray);
         user.votesList = newArray;
         await user.save();
       } else {
@@ -455,21 +470,25 @@ const vote = asyncHandler(async (req, res) => {
         await user.save();
       }
     } else {
-      console.log(votesList);
       votesList.push({
         isQuestionVote: true,
         id: questionId,
         voteValue: voteValue,
       });
       user.voteList = votesList;
-      console.log(votesList);
       await user.save();
     }
     question.votes = question.votes + add;
     await question.save();
     response.voteCount = question.votes;
-    console.log(user);
     response.votesList = user.votesList;
+    response.token = generateToken({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      votesList: user.votesList,
+    });
 
     res.status(200).send(response);
   }
@@ -497,15 +516,14 @@ const viewQuestion = asyncHandler(async (req, res) => {
   const alreadyExists = viewsList.find((elem) => {
     return elem.ip == ip;
   });
-  if (alreadyExists) {
-    res.status(400).send("already viewed");
-    return;
+  if (!alreadyExists) {
+    question.viewsList.push({ ip: ip });
+    await question.save();
   }
-  question.viewsList.push({ ip: ip });
 
-  await question.save();
-  console.log("beep");
-  res.status(200).send(JSON.stringify(question.viewsList));
+  res
+    .status(200)
+    .send({ viewsList: JSON.stringify(question.viewsList), question });
 });
 const getTags = asyncHandler(async (req, res) => {
   const allTags = await Tags.find({});

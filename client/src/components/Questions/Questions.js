@@ -58,6 +58,7 @@ export default function Questions() {
       for (let i = 2; i <= Math.min(pageCount - 1, 5); i++) {
         toRender.push(
           <Link
+            key={i}
             to="#"
             style={{
               ...linkStyle,
@@ -75,6 +76,7 @@ export default function Questions() {
       for (let i = currentPage - 2; i <= Math.min(currentPage + 2, pageCount - 1); i++) {
         toRender.push(
           <Link
+            key={i}
             to="#"
             style={{
               ...linkStyle,
@@ -154,9 +156,10 @@ export default function Questions() {
           </button>
         </div>
       </div>
-      {questionsData.map((elem) => {
+      {questionsData.map((elem, i) => {
         return (
           <QuestionCard
+            key={i}
             id={elem.id}
             title={elem.title}
             tags={elem.tags}

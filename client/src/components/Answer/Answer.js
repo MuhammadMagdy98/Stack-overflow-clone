@@ -8,8 +8,7 @@ import moment from "moment";
 import "./Answer-style.css";
 import Comment from "../Comments/Comment";
 import saveQuestions from "../../helpers/save-questions";
-import updateVotesList from "../../helpers/update-voteslist";
-
+import jwtDecode from "jwt-decode";
 function Answer(props) {
   const [voteCasted, setVoteCasted] = useState(false);
   const [voteCount, setVoteCount] = useState(props.votes);
@@ -17,29 +16,41 @@ function Answer(props) {
   const [comment, setComment] = useState("");
   const [isUpVote, setIsUpvote] = useState(false);
   const [isDownVote, setIsDownVote] = useState(false);
+  useState(() => {
+    let votesList = jwtDecode(localStorage.getItem('token')).data.votesList;
 
+    const voted = votesList.find((elem) => {
+      return !elem.isQuestionVote && elem.answerId === props.answerId;
+    });
+    if (voted) {
+      setIsUpvote(voted.voteValue === 1);
+      setIsDownVote(voted.voteValue === -1);
+    }
+  }, []);
   const handleUpVote = async () => {
     const data = {
       questionId: props.id,
       voteValue: 1,
+      answerId: props.answerId,
       token: localStorage.getItem("token"),
-      answerId: props.answerId
+      
     };
+    console.log(`data is => ${JSON.stringify(data)}`);
+    console.log(`data is => ${props.answerId}`);
     const response = await axios.post("http://localhost:3001/vote", data);
     if (response) {
       if (response.data.state === "done") {
         setVoteCasted(true);
-        updateVotesList(response.data.votesList);
         setIsUpvote(true);
         setIsDownVote(false);
       } else {
         setVoteCasted(false);
-        updateVotesList(response.data.votesList);
         setIsUpvote(false);
         setIsDownVote(false);
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
+      localStorage.setItem('token', response.data.token);
     } else {
     }
   };
@@ -64,6 +75,7 @@ function Answer(props) {
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
+      localStorage.setItem('token', response.data.token);
     } else {
     }
   };
@@ -119,9 +131,10 @@ function Answer(props) {
           answered by {props.author} at {moment(props.createdAt).format("lll")}
         </p>
       </div>
-      {props.comments.map((elem) => {
+      {props.comments.map((elem, i) => {
         return (
           <Comment
+            key={i}
             body={elem.body}
             url={"/"}
             username={elem.user}
