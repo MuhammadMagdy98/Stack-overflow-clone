@@ -20,12 +20,21 @@ const getQuestions = asyncHandler(async (req, res) => {
   let questions = await Question.find({});
   if (tab === "score") {
     questions.sort((a, b) => {
-      return b.votes - a.votes;
+      if (a.votes !== b.votes)
+        return b.votes - a.votes;
+      
+      a = new Date(a.createdAt);
+      b = new Date(b.createdAt);
+      return b.getTime() - a.getTime();
+      
     });
   } else if (tab === "unanswered") {
     questions = questions.filter((elem) => {
       return elem.answerList.length === 0;
     });
+    questions.reverse();
+  } else if (tab === "newest") {
+    questions.reverse();
   }
   const totalPages = Math.ceil(questions.length / perpage);
   if (page > totalPages) {

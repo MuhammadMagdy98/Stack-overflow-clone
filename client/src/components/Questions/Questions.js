@@ -98,14 +98,17 @@ export default function Questions() {
 
   const handleNewest = () => {
     setFilterBy("newest");
+    setCurrentPage(1);
   };
 
   const handleUnanswered = () => {
     setFilterBy("unanswered");
+    setCurrentPage(1);
   };
 
   const handleScore = () => {
     setFilterBy("score");
+    setCurrentPage(1);
   };
   return (
     <div className="questions-container">

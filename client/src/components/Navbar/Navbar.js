@@ -21,7 +21,7 @@ function Navbar() {
   function changeUrl(url) {
     navigate(`/${url}`);
   }
-  const { setUsername, isLoggedIn, username, isAdmin } =
+  const { setUsername, isLoggedIn, username, isAdmin, setIsAdmin } =
     useContext(LoginContext);
   const [loginState, setLoginState] = useState();
   console.log(loginState);
@@ -31,8 +31,11 @@ function Navbar() {
     console.log("hey");
     if (localStorage.getItem("token")) {
 
-      console.log(jwtDecode(localStorage.getItem("token")));
-      const userName = jwtDecode(localStorage.getItem("token")).data.username;
+      let decodedToken = jwtDecode(localStorage.getItem("token")).data;
+      const userName = decodedToken.username;
+      setIsAdmin(decodedToken.isAdmin);
+      
+      // setIsAdmin(jwtDecode(localStorage.getItem("token").data.isAdmin));
       setLoginState(
         <>
           <UserMenu userName={userName} />

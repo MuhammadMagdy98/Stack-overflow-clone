@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext} from "react";
 import DownArrow from "../../assets/caret-down-solid.svg";
 import GreenArrow from "../../assets/caret-green.svg";
 import RedArrow from "../../assets/caret-red.svg";
@@ -11,20 +11,20 @@ import updateVotesList from "../../helpers/update-voteslist";
 import Answer from "../Answer/Answer";
 import moment from "moment";
 import pluralize from "../../helpers/pluralize";
-import jwtDecode from "jwt-decode"
+import jwtDecode from "jwt-decode";
+import { ToastContainer, toast } from "react-toastify";
+import { LoginContext } from "../../helpers/Context";
 
 export default function QuestionView(props) {
   let { id } = useParams();
   id = parseInt(id);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [answerList, setAnswerList] = useState([]);
-
+  const {isLoggedIn} = useContext(LoginContext);
   const [voteCount, setVoteCount] = useState(0);
   useEffect(() => {
     const viewQuestion = async () => {
-      const response = await axios.post(
-        `http://localhost:3001/question/${id}`
-      );
+      const response = await axios.post(`http://localhost:3001/question/${id}`);
 
       if (!response) {
       } else {
@@ -42,24 +42,33 @@ export default function QuestionView(props) {
   const [isDownVote, setIsDownVote] = useState(false);
 
   useEffect(() => {
-    let votesList = jwtDecode(localStorage.getItem("token")).data.votesList;
-    const voted = votesList.find((elem) => {
-      return elem.isQuestionVote && elem.id === id;
-    });
-    if (voted) {
-      setIsUpvote(voted.voteValue === 1);
-      setIsDownVote(voted.voteValue === -1);
-      setVoteCasted(true);
+    if (localStorage.getItem("token")) {
+      let votesList = jwtDecode(localStorage.getItem("token")).data.votesList;
+      const voted = votesList.find((elem) => {
+        return elem.isQuestionVote && elem.id === id;
+      });
+      if (voted) {
+        setIsUpvote(voted.voteValue === 1);
+        setIsDownVote(voted.voteValue === -1);
+        setVoteCasted(true);
+      }
+    } else {
+      console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhh");
     }
   }, []);
-
-
 
   const [voteCasted, setVoteCasted] = useState(false);
 
   const [comment, setComment] = useState("");
   const [answer, setAnswer] = useState("");
   const handleUpVote = async () => {
+    if (!isLoggedIn) {
+      toast.info("You must login to login to upvote", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "dark",
+      });
+      return;
+    }
     const data = {
       questionId: id,
       voteValue: 1,
@@ -69,7 +78,7 @@ export default function QuestionView(props) {
     if (response) {
       if (response.data.state === "done") {
         setVoteCasted(true);
-        
+
         // updateVotesList(response.data.votesList);
         setIsUpvote(true);
         setIsDownVote(false);
@@ -79,7 +88,7 @@ export default function QuestionView(props) {
         setIsUpvote(false);
         setIsDownVote(false);
       }
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
     } else {
@@ -87,6 +96,13 @@ export default function QuestionView(props) {
   };
 
   const handleDownVote = async () => {
+    if (!isLoggedIn) {
+      toast.info("You must login to login to downvote", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "dark",
+      });
+      return;
+    }
     const data = {
       questionId: id,
       voteValue: -1,
@@ -107,7 +123,7 @@ export default function QuestionView(props) {
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
     } else {
     }
   };
@@ -125,6 +141,13 @@ export default function QuestionView(props) {
   };
 
   const addAnswer = async () => {
+    if (!isLoggedIn) {
+      toast.info("You must login to post an answer", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "dark",
+      });
+      return;
+    }
     let data = {
       questionId: id,
       body: answer,
@@ -135,7 +158,6 @@ export default function QuestionView(props) {
     if (response) {
       setAnswerList(response.data);
       setCurrentQuestion({ ...currentQuestion, answerList: response.data });
-    
     } else {
       //TODO
     }
@@ -144,6 +166,12 @@ export default function QuestionView(props) {
   };
 
   const submitComment = async (e) => {
+    if (!isLoggedIn) {
+      toast.info("You must login to add a comment", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "dark",
+      });
+    }
     const data = {
       token: localStorage.getItem("token"),
       body: comment,
@@ -232,6 +260,7 @@ export default function QuestionView(props) {
             className="comment-textarea"
             onChange={handleAddCommentChange}
             value={comment}
+            
           >
             {" "}
           </textarea>
@@ -242,7 +271,8 @@ export default function QuestionView(props) {
       )}
       <div style={{ margin: "40px 0px 20px 50px", fontSize: "20px" }}>
         {" "}
-        {currentQuestion && pluralize("answer", currentQuestion.answerList.length)}
+        {currentQuestion &&
+          pluralize("answer", currentQuestion.answerList.length)}
       </div>
       {answerList &&
         answerList.map((elem, index) => {
@@ -272,6 +302,7 @@ export default function QuestionView(props) {
           Post your answer
         </button>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

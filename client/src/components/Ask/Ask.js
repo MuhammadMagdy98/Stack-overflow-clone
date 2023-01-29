@@ -5,6 +5,10 @@ import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { TagCard } from "../TagCard/TagCard";
 import {Navigate, useNavigate} from "react-router-dom";
+import jwtDecode from "jwt-decode"
+import { LoginContext } from "../../helpers/Context";
+import { toast, ToastContainer } from "react-toastify";
+
 
 import "../Tags/Tags-style.css";
 
@@ -16,6 +20,7 @@ export default function Ask() {
   const [cards, setCards] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedTagsLinks, setSelectedTagsLinks] = useState([]);
+  const {isLoggedIn} = useContext(LoginContext);
   const handleAsk = async(event) => {
     event.preventDefault();
     try {
@@ -74,6 +79,13 @@ export default function Ask() {
     console.log(formData);
   };
   useEffect(() => {
+    if (!isLoggedIn) {
+      toast.info("You must login to ask a question", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "dark",
+      });
+      navigate('/login');
+    }
     console.log("Hi Im fetching tags");
     const fetchTags = async () => {
       const tags = await axios.get("http://localhost:3001/tags");
@@ -106,6 +118,7 @@ export default function Ask() {
 
   }, [selectedTags]);
   return (
+    isLoggedIn &&
     <div className="question-wrapper">
       <h1>Ask a question</h1>
       <div className="question-container">
@@ -150,6 +163,7 @@ export default function Ask() {
         </div>
       </div>
       <button className="ask-button" onClick={handleAsk}>Ask question</button>
+      <ToastContainer/>
     </div>
   );
 }

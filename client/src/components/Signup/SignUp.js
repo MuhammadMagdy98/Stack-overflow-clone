@@ -7,7 +7,8 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import updateUser from "../../helpers/updateuser";
 import { LoginContext } from "../../helpers/Context";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [signUpData, setSignUpData] = useState({
@@ -16,7 +17,7 @@ export default function Login() {
     password: "",
   });
 
-  const { setIsLoggedIn} = useContext(LoginContext);
+  const { setIsLoggedIn } = useContext(LoginContext);
   const navigate = useNavigate();
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -25,12 +26,14 @@ export default function Login() {
         "http://localhost:3001/signup",
         signUpData
       );
-      updateUser(response.data);
+      updateUser(response.data.token);
       setIsLoggedIn(true);
-      navigate('/');
-      
+      navigate("/");
     } catch (err) {
-      console.log(err);
+      toast.error(err.response.data.message, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        theme: "dark",
+      });
     }
   };
 
@@ -59,6 +62,7 @@ export default function Login() {
           <label>Email</label>
           <input
             type="email"
+            required
             className="login-email"
             name="email"
             value={signUpData.email}
@@ -67,6 +71,7 @@ export default function Login() {
           <label>Username</label>
           <input
             className="login-email"
+            required
             name="username"
             value={signUpData.username}
             onChange={handleChange}
@@ -77,6 +82,7 @@ export default function Login() {
             type="password"
             className="login-password"
             name="password"
+            required
             value={signUpData.password}
             onChange={handleChange}
           ></input>
@@ -85,6 +91,7 @@ export default function Login() {
           </div>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

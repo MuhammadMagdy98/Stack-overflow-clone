@@ -17,14 +17,16 @@ function Answer(props) {
   const [isUpVote, setIsUpvote] = useState(false);
   const [isDownVote, setIsDownVote] = useState(false);
   useState(() => {
-    let votesList = jwtDecode(localStorage.getItem('token')).data.votesList;
+    if (localStorage.getItem("token")) {
+      let votesList = jwtDecode(localStorage.getItem("token")).data.votesList;
 
-    const voted = votesList.find((elem) => {
-      return !elem.isQuestionVote && elem.answerId === props.answerId;
-    });
-    if (voted) {
-      setIsUpvote(voted.voteValue === 1);
-      setIsDownVote(voted.voteValue === -1);
+      const voted = votesList.find((elem) => {
+        return !elem.isQuestionVote && elem.answerId === props.answerId;
+      });
+      if (voted) {
+        setIsUpvote(voted.voteValue === 1);
+        setIsDownVote(voted.voteValue === -1);
+      }
     }
   }, []);
   const handleUpVote = async () => {
@@ -33,7 +35,6 @@ function Answer(props) {
       voteValue: 1,
       answerId: props.answerId,
       token: localStorage.getItem("token"),
-      
     };
     console.log(`data is => ${JSON.stringify(data)}`);
     console.log(`data is => ${props.answerId}`);
@@ -50,7 +51,7 @@ function Answer(props) {
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
     } else {
     }
   };
@@ -60,7 +61,7 @@ function Answer(props) {
       questionId: props.id,
       voteValue: -1,
       token: localStorage.getItem("token"),
-      answerId: props.answerId
+      answerId: props.answerId,
     };
     const response = await axios.post("http://localhost:3001/vote", data);
     if (response) {
@@ -75,7 +76,7 @@ function Answer(props) {
       }
       setVoteCount(response.data.voteCount);
       setVoteCasted(!voteCasted);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("token", response.data.token);
     } else {
     }
   };

@@ -7,26 +7,72 @@ const jwt = require("jsonwebtoken");
 const { restart } = require("nodemon");
 const question = require("../model/question");
 const moment = require("moment");
+const validator = require("validator");
 
 const signup = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
 
   if (!email || !username || !password) {
-    res.status(400);
-    throw new Error("invalid data");
+    res.status(400).json({
+      message: "Please enter email, username and password",
+      success: false,
+    });
+    return;
+  }
+
+  if (!validator.isEmail(email)) {
+    res
+      .status(400)
+      .json({ message: "Please enter a valid email", succes: false });
+    return;
+  }
+
+  if (password.length < 8) {
+    res.status(400).json({
+      message: "Password length should be at least 8 characters",
+      success: false,
+    });
+    return;
+  }
+  if (password.length > 256) {
+    res.status(400).json({
+      message: "Password shouldn't be longer than 256 characters",
+      success: false,
+    });
+    return;
+  }
+
+  if (username.length > 32) {
+    res.status(400).json({
+      message: "Username shouldn't be longer than 32",
+      success: false,
+    });
+    return;
+  }
+
+  if (username.length < 3) {
+    res.status(400).json({
+      message: "Username should be at least 3 characters",
+      success: false,
+    });
+    return;
   }
 
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400);
-    throw new Error("email already exists");
+    res
+      .status(400)
+      .json({ message: "This email already exists", success: false });
+    return;
   }
 
   const userNameExists = await User.findOne({ username });
   if (userNameExists) {
-    res.status(400);
-    throw new Error("username already exists");
+    res
+      .status(400)
+      .json({ message: "This username already exists", success: false });
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -55,8 +101,7 @@ const signup = asyncHandler(async (req, res) => {
       }),
     });
   } else {
-    res.status(400);
-    throw new Error("invalid user data");
+    res.status(400).json({ message: "invalid user data", success: false });
   }
 });
 
@@ -64,16 +109,20 @@ const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(400);
-    throw new Error("invalid data");
+    res
+      .status(400)
+      .json({ message: "Please enter username and password", success: false });
+    return;
   }
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(400);
-
-    throw new Error("username or password is incorrect");
+    console.log("beep");
+    res
+      .status(400)
+      .json({ message: "email or password is incorrect", success: false });
+    return;
   }
 
   if (await bcrypt.compare(password, user.password)) {
@@ -87,8 +136,10 @@ const login = asyncHandler(async (req, res) => {
       }),
     });
   } else {
-    res.status(400);
-    throw new Error("username or password is incorrect");
+    res
+      .status(400)
+      .json({ message: "email or password is incorrect", success: false });
+    return;
   }
 });
 
@@ -348,7 +399,6 @@ const vote = asyncHandler(async (req, res) => {
     return;
   }
   const obj = req.body;
-  
 
   if (Object.hasOwn(obj, "answerId")) {
     let { questionId, voteValue, answerId, token } = req.body;
@@ -436,10 +486,8 @@ const vote = asyncHandler(async (req, res) => {
 
     let votesList = user.votesList;
     const alreadyVoted = votesList.find((obj) => {
-  
       return obj.id === questionId;
     });
-
 
     let isUpVote = true;
     if (Math.abs(voteValue) !== 1) {

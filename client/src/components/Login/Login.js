@@ -5,10 +5,12 @@ import GithubLogo from "../../assets/github-logo.svg";
 import { LoginContext } from "../../helpers/Context";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
-import { useContext } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 import updateUser from "../../helpers/updateuser";
-import jwtDecode from "jwt-decode"
+import jwtDecode from "jwt-decode";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [loginData, setLoginData] = useState({
@@ -16,7 +18,9 @@ export default function Login() {
     password: "",
   });
 
-  const {setUsername, isLoggedIn, username, setIsLoggedIn, setIsAdmin} = useContext(LoginContext);
+  const { setUsername, isLoggedIn, username, setIsLoggedIn, setIsAdmin } =
+    useContext(LoginContext);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
@@ -27,23 +31,25 @@ export default function Login() {
         "http://localhost:3001/login",
         loginData
       );
-      
       let decodedToken = jwtDecode(response.data.token);
-      
+      console.log(decodedToken);
       setUsername(decodedToken.username);
 
       setIsLoggedIn(true);
 
       setIsAdmin(decodedToken.isAdmin);
-      
+
       console.log(response.data.token);
 
       updateUser(response.data.token);
 
-      navigate('/');
-      
+      navigate("/");
     } catch (err) {
-      console.log(err);
+      toast.error(err.response.data.message, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        theme: "dark",
+      });
+      setError(err.response.data.message);
     }
   };
   const handleChange = (e) => {
@@ -72,6 +78,7 @@ export default function Login() {
             className="login-email"
             type="email"
             name="email"
+            required
             value={loginData.email}
             onChange={handleChange}
           ></input>
@@ -81,14 +88,17 @@ export default function Login() {
             className="login-password"
             type="password"
             name="password"
+            required
             value={loginData.password}
             onChange={handleChange}
           ></input>
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <div className="login-button-container">
             <button className="login-button">Log in</button>
           </div>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }
