@@ -1,1 +1,1 @@
-# QA-Platform
+# Stack overflow clone
