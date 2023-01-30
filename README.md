@@ -13,7 +13,7 @@
 * Comment on both question and answers 
 
 
-TODO: 
+#TODO: 
 * User profile statistics
 * Search questions 
 * Reputation 
@@ -21,7 +21,7 @@ TODO:
 * Watch tags
 * View user profiles
 
-Screenshots
+#Screenshots
 
 ![1](https://user-images.githubusercontent.com/52232260/215475610-eb3bd539-1b59-47c8-8e9d-09d097987b94.png)
 
