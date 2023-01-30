@@ -1,5 +1,6 @@
 # Stack overflow clone
 
+
 # Features done so far: 
 * Login / Signup 
 * View questions 
@@ -19,6 +20,8 @@ TODO:
 * Change password 
 * Watch tags
 * View user profiles
+
+Screenshots
 
 ![1](https://user-images.githubusercontent.com/52232260/215475610-eb3bd539-1b59-47c8-8e9d-09d097987b94.png)
 
