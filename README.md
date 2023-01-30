@@ -1,4 +1,25 @@
 # Stack overflow clone
+
+# Features done so far: 
+* Login / Signup 
+* View questions 
+* Pagination 
+* Filter questions 
+* Ask questions 
+* Add tags (add new tags)
+* Question view count 
+* Upvote/Downvote questions and answers
+* Comment on both question and answers 
+
+
+TODO: 
+* User profile statistics
+* Search questions 
+* Reputation 
+* Change password 
+* Watch tags
+* View user profiles
+
 ![1](https://user-images.githubusercontent.com/52232260/215475610-eb3bd539-1b59-47c8-8e9d-09d097987b94.png)
 
 ![2](https://user-images.githubusercontent.com/52232260/215475686-6bf837f7-ac1c-40a6-959b-24341f81c1f8.png)
