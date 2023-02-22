@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import saveQuestions from "../../helpers/save-questions";
 import moment from "moment";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Questions() {
   let linkStyle = {
@@ -23,6 +24,7 @@ export default function Questions() {
   const [pageCount, setPageCount] = useState(1);
   const [questionsPerPage, setQuestionsPerPage] = useState(15);
   const [filterBy, setFilterBy] = useState("newest");
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const params = {
       tab: filterBy,
@@ -43,6 +45,7 @@ export default function Questions() {
       console.log(questions.data.questions);
       setQuestionsCount(questions.data.questionsCount);
       setPageCount(Math.ceil(questions.data.questionsCount / questionsPerPage));
+      setIsLoading(false);
     };
     fetchQuestions();
   }, [currentPage, filterBy, questionsPerPage]);
@@ -73,7 +76,11 @@ export default function Questions() {
         );
       }
     } else {
-      for (let i = currentPage - 2; i <= Math.min(currentPage + 2, pageCount - 1); i++) {
+      for (
+        let i = currentPage - 2;
+        i <= Math.min(currentPage + 2, pageCount - 1);
+        i++
+      ) {
         toRender.push(
           <Link
             key={i}
@@ -110,7 +117,12 @@ export default function Questions() {
     setFilterBy("score");
     setCurrentPage(1);
   };
+
+  if (isLoading) {
+    return <ThreeDots color='grey' wrapperStyle={{margin: '80px'}}/>
+  }
   return (
+  
     <div className="questions-container">
       <div className="questions-header">
         <h1>All questions</h1>
@@ -159,121 +171,125 @@ export default function Questions() {
           </button>
         </div>
       </div>
-      {questionsData.map((elem, i) => {
-        return (
-          <QuestionCard
-            key={i}
-            id={elem.id}
-            title={elem.title}
-            tags={elem.tags}
-            author={elem.author}
-            askedTime={moment(elem.createdAt).fromNow()}
-            votes={elem.votes}
-            answersCount={elem.answerList.length}
-            viewsCount={elem.viewsList.length}
-          />
-        );
-      })}
-      <div className="questions-pagination">
-        <div className="pages">
-          {currentPage > 1 && (
-            <Link
-              to="#"
-              style={linkStyle}
-              onClick={() =>
-                setCurrentPage((prevPage) => parseInt(prevPage) - 1)
-              }
-            >
-              Prev
-            </Link>
-          )}
-          {
+       {(
+        questionsData.map((elem, i) => {
+          return (
+            <QuestionCard
+              key={i}
+              id={elem.id}
+              title={elem.title}
+              tags={elem.tags}
+              author={elem.author}
+              askedTime={moment(elem.createdAt).fromNow()}
+              votes={elem.votes}
+              answersCount={elem.answerList.length}
+              viewsCount={elem.viewsList.length}
+            />
+          );
+        })
+      )}
+      {(
+        <div className="questions-pagination">
+          <div className="pages">
+            {currentPage > 1 && (
+              <Link
+                to="#"
+                style={linkStyle}
+                onClick={() =>
+                  setCurrentPage((prevPage) => parseInt(prevPage) - 1)
+                }
+              >
+                Prev
+              </Link>
+            )}
+            {
+              <Link
+                to="#"
+                style={{
+                  ...linkStyle,
+                  backgroundColor:
+                    currentPage == 1 ? "rgb(255, 46, 99)" : "#263159",
+                }}
+                name={1}
+                onClick={handlePageClick}
+              >
+                1
+              </Link>
+            }
+            {pagesData}
+            {
+              <Link
+                to="#"
+                style={{
+                  ...linkStyle,
+                  backgroundColor:
+                    currentPage == pageCount ? "rgb(255, 46, 99)" : "#263159",
+                }}
+                name={pageCount}
+                onClick={handlePageClick}
+              >
+                {pageCount}
+              </Link>
+            }
+            {currentPage < pageCount && (
+              <Link
+                to="#"
+                style={linkStyle}
+                onClick={() =>
+                  setCurrentPage((prevPage) => parseInt(prevPage) + 1)
+                }
+              >
+                Next
+              </Link>
+            )}
+          </div>
+          <div className="per-page">
+            <span>Per page</span>
             <Link
               to="#"
               style={{
                 ...linkStyle,
                 backgroundColor:
-                  currentPage == 1 ? "rgb(255, 46, 99)" : "#263159",
+                  questionsPerPage === 15 ? "rgb(255, 46, 99)" : "",
               }}
-              name={1}
-              onClick={handlePageClick}
+              onClick={() => {
+                setQuestionsPerPage(15);
+                setCurrentPage(1);
+              }}
             >
-              1
+              15
             </Link>
-          }
-          {pagesData}
-          {
             <Link
               to="#"
               style={{
                 ...linkStyle,
                 backgroundColor:
-                  currentPage == pageCount ? "rgb(255, 46, 99)" : "#263159",
+                  questionsPerPage === 30 ? "rgb(255, 46, 99)" : "",
               }}
-              name={pageCount}
-              onClick={handlePageClick}
+              onClick={() => {
+                setQuestionsPerPage(30);
+                setCurrentPage(1);
+              }}
             >
-              {pageCount}
+              30
             </Link>
-          }
-          {currentPage < pageCount && (
             <Link
               to="#"
-              style={linkStyle}
-              onClick={() =>
-                setCurrentPage((prevPage) => parseInt(prevPage) + 1)
-              }
+              style={{
+                ...linkStyle,
+                backgroundColor:
+                  questionsPerPage === 50 ? "rgb(255, 46, 99)" : "",
+              }}
+              onClick={() => {
+                setQuestionsPerPage(50);
+                setCurrentPage(1);
+              }}
             >
-              Next
+              50
             </Link>
-          )}
+          </div>
         </div>
-        <div className="per-page">
-          <span>Per page</span>
-          <Link
-            to="#"
-            style={{
-              ...linkStyle,
-              backgroundColor:
-                questionsPerPage === 15 ? "rgb(255, 46, 99)" : "",
-            }}
-            onClick={() => {
-              setQuestionsPerPage(15);
-              setCurrentPage(1);
-            }}
-          >
-            15
-          </Link>
-          <Link
-            to="#"
-            style={{
-              ...linkStyle,
-              backgroundColor:
-                questionsPerPage === 30 ? "rgb(255, 46, 99)" : "",
-            }}
-            onClick={() => {
-              setQuestionsPerPage(30);
-              setCurrentPage(1);
-            }}
-          >
-            30
-          </Link>
-          <Link
-            to="#"
-            style={{
-              ...linkStyle,
-              backgroundColor:
-                questionsPerPage === 50 ? "rgb(255, 46, 99)" : "",
-            }}
-            onClick={() => {
-              setQuestionsPerPage(50);
-              setCurrentPage(1);
-            }}
-          >
-            50
-          </Link>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

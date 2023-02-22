@@ -1,10 +1,10 @@
 const {Router} = require('express');
 const userController = require('../controllers/userController');
-
+const validateSignUpData = require('../middleware/validateSignUpData');
 
 const router = Router();
 
-router.post('/signup', userController.signup);
+router.post('/signup', validateSignUpData, userController.signup);
 
 router.post('/login', userController.login);
 

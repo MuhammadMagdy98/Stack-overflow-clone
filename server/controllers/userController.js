@@ -4,59 +4,11 @@ const Question = require("../model/question");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const { restart } = require("nodemon");
 const question = require("../model/question");
 const moment = require("moment");
-const validator = require("validator");
 
 const signup = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-
-  if (!email || !username || !password) {
-    res.status(400).json({
-      message: "Please enter email, username and password",
-      success: false,
-    });
-    return;
-  }
-
-  if (!validator.isEmail(email)) {
-    res
-      .status(400)
-      .json({ message: "Please enter a valid email", succes: false });
-    return;
-  }
-
-  if (password.length < 8) {
-    res.status(400).json({
-      message: "Password length should be at least 8 characters",
-      success: false,
-    });
-    return;
-  }
-  if (password.length > 256) {
-    res.status(400).json({
-      message: "Password shouldn't be longer than 256 characters",
-      success: false,
-    });
-    return;
-  }
-
-  if (username.length > 32) {
-    res.status(400).json({
-      message: "Username shouldn't be longer than 32",
-      success: false,
-    });
-    return;
-  }
-
-  if (username.length < 3) {
-    res.status(400).json({
-      message: "Username should be at least 3 characters",
-      success: false,
-    });
-    return;
-  }
 
   const userExists = await User.findOne({ email });
 
